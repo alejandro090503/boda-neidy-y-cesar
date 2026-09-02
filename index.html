@@ -644,7 +644,8 @@ section>*{position:relative;z-index:1}
 /* ── LLUVIA DE SOBRES ── */
 .env-rain{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .env-rain-item{position:absolute;top:-46px;will-change:transform;opacity:0}
-#gifts .env-stage{position:relative;z-index:1}
+#gifts .env-stage{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center}
+#gifts .env-stage>.gf-sub,#gifts .env-stage>.giftbox-stage,#gifts .env-stage>.gf-sep{width:100%}
 .env-interactive{display:flex;flex-direction:column;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;border:none;background:none;padding:0;margin:26px auto 0;opacity:0}
 .env-body{perspective:700px;position:relative;width:min(258px,74vw);aspect-ratio:260/200;filter:drop-shadow(0 10px 26px rgba(0,0,0,.55))}
 .env-body svg.env-svg{width:100%;height:100%;display:block}
@@ -657,7 +658,7 @@ section>*{position:relative;z-index:1}
 .env-mailbox-icon{width:42px;height:42px;color:var(--gold);margin-top:6px}
 .env-title{font-family:'Great Vibes',cursive;font-size:clamp(28px,8vw,34px);line-height:1.4;padding:.08em 0;background:var(--gold-grad);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--gold-lt);animation:goldFlow 7s ease-in-out infinite}
 .env-desc{font-family:'Cormorant Garamond',serif;font-size:clamp(15px,4vw,17px);font-weight:500;font-style:italic;color:var(--cream);opacity:.82;line-height:1.75;max-width:300px}
-.env-tap-hint{font-family:'Raleway',sans-serif;font-size:clamp(10px,2.6vw,12px);letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-top:18px;opacity:0;transition:opacity .5s ease;position:relative;z-index:1}
+.env-tap-hint{text-align:center;align-self:center;font-family:'Raleway',sans-serif;font-size:clamp(10px,2.6vw,12px);letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-top:18px;opacity:0;transition:opacity .5s ease;position:relative;z-index:1}
 .env-tap-hint.show{opacity:.85;animation:envHintPulse 2.4s ease-in-out infinite}
 .env-interactive.open~.env-tap-hint{opacity:0!important;animation:none;pointer-events:none}
 @keyframes envHintPulse{0%,100%{opacity:.5}50%{opacity:.95}}
@@ -1320,6 +1321,10 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollAnims();
     initEnvelopeRain();
     initGiftBox();
+    /* el hero (video) y las imagenes cambian la altura despues de crear
+       los ScrollTrigger; sin este refresh los umbrales quedan desfasados */
+    setTimeout(function(){ ScrollTrigger.refresh(); }, 600);
+    window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
     countdown();
     setInterval(countdown, 1000);
     startMusicOnOpen();
@@ -1475,29 +1480,15 @@ function scrollAnims() {
   document.querySelectorAll('section').forEach(sec => {
     const els = sec.querySelectorAll('.lbl,.ttl,.gline');
     if (els.length) {
-      gsap.from(els, {
-        opacity: 0, y: 26, duration: .75, stagger: .12, ease,
-        scrollTrigger: { trigger: sec, start: 'top 88%', once: true }
-      });
+      gsap.fromTo(els, {opacity:0, y:26}, {opacity:1, y:0, duration:.75, stagger:.12, ease, immediateRender:false, scrollTrigger: { trigger: sec, start: 'top 88%', once: true }});
     }
   });
 
-  gsap.from('.cd-box', {
-    opacity: 0, y: 30, scale: .85, duration: .7, stagger: .1,
-    ease: 'back.out(1.5)',
-    scrollTrigger: { trigger: '#countdown', start: 'top 85%', once: true }
-  });
+  gsap.fromTo('.cd-box', {opacity:0, y:30, scale:.85}, {opacity:1, y:0, scale:1, duration:.7, stagger:.1, ease:'back.out(1.5)', immediateRender:false, scrollTrigger: { trigger: '#countdown', start: 'top 85%', once: true }});
 
-  gsap.from('.loc-card', {
-    opacity: 0, y: 40, duration: .8, stagger: .15, ease,
-    scrollTrigger: { trigger: '#location', start: 'top 78%', once: true }
-  });
+  gsap.fromTo('.loc-card', {opacity:0, y:40}, {opacity:1, y:0, duration:.8, stagger:.15, ease, immediateRender:false, scrollTrigger: { trigger: '#location', start: 'top 78%', once: true }});
 
-  gsap.from(['#calendar .cal-sub', '#calBtn'], {
-    opacity: 0, y: 20, scale: .95, duration: .7, stagger: .15,
-    ease: 'back.out(1.3)',
-    scrollTrigger: { trigger: '#calendar', start: 'top 84%', once: true }
-  });
+  gsap.fromTo(['#calendar .cal-sub', '#calBtn'], {opacity:0, y:20, scale:.95}, {opacity:1, y:0, scale:1, duration:.7, stagger:.15, ease:'back.out(1.3)', immediateRender:false, scrollTrigger: { trigger: '#calendar', start: 'top 84%', once: true }});
 
   /* Itinerario V3 — Centered Glowing Timeline */
   (function(){
@@ -1545,15 +1536,8 @@ function scrollAnims() {
     });
   })();
 
-  gsap.from('.dc-sub', {
-    opacity: 0, y: 20, duration: .7, ease,
-    scrollTrigger: { trigger: '#dresscode', start: 'top 82%', once: true }
-  });
-  gsap.from('.dc-col', {
-    opacity: 0, y: 30, scale: .9, duration: .7, stagger: .15,
-    ease: 'back.out(1.5)',
-    scrollTrigger: { trigger: '#dcCols', start: 'top 86%', once: true }
-  });
+  gsap.fromTo('.dc-sub', {opacity:0, y:20}, {opacity:1, y:0, duration:.7, ease, immediateRender:false, scrollTrigger: { trigger: '#dresscode', start: 'top 82%', once: true }});
+  gsap.fromTo('.dc-col', {opacity:0, y:30, scale:.9}, {opacity:1, y:0, scale:1, duration:.7, stagger:.15, ease:'back.out(1.5)', immediateRender:false, scrollTrigger: { trigger: '#dcCols', start: 'top 86%', once: true }});
   gsap.set('.pal-sw', { scale: 0 });
   ScrollTrigger.create({
     trigger: '#palette', start: 'top 86%', once: true,
@@ -1602,47 +1586,23 @@ function scrollAnims() {
     draw();
   })();
 
-  gsap.from('.fam-ttl', {
-    opacity: 0, y: 20, duration: .65, stagger: .2, ease,
-    scrollTrigger: { trigger: '#family', start: 'top 78%', once: true }
-  });
-  gsap.from('.fam-card', {
-    opacity: 0, y: 24, duration: .6, stagger: .1, ease,
-    scrollTrigger: { trigger: '#family', start: 'top 78%', once: true }
-  });
+  gsap.fromTo('.fam-ttl', {opacity:0, y:20}, {opacity:1, y:0, duration:.65, stagger:.2, ease, immediateRender:false, scrollTrigger: { trigger: '#family', start: 'top 78%', once: true }});
+  gsap.fromTo('.fam-card', {opacity:0, y:24}, {opacity:1, y:0, duration:.6, stagger:.1, ease, immediateRender:false, scrollTrigger: { trigger: '#family', start: 'top 78%', once: true }});
 
-  gsap.from('.gf-card', {
-    opacity: 0, y: 24, duration: .65, stagger: .12, ease,
-    scrollTrigger: { trigger: '#gifts', start: 'top 80%', once: true }
-  });
+  
 
-  gsap.from('.alb-qr-frame', {
-    opacity: 0, scale: .84, duration: .8, ease: 'back.out(1.4)',
-    scrollTrigger: { trigger: '#album', start: 'top 80%', once: true }
-  });
-  gsap.from(['.alb-sub','.alb-scan','.alb-btn','.alb-hint'], {
-    opacity: 0, y: 20, duration: .65, stagger: .12, ease,
-    scrollTrigger: { trigger: '#album', start: 'top 80%', once: true }
-  });
+  gsap.fromTo('.alb-qr-frame', {opacity:0, scale:.84}, {opacity:1, scale:1, duration:.8, ease:'back.out(1.4)', immediateRender:false, scrollTrigger: { trigger: '#album', start: 'top 80%', once: true }});
+  gsap.fromTo(['.alb-sub','.alb-scan','.alb-btn','.alb-hint'], {opacity:0, y:20}, {opacity:1, y:0, duration:.65, stagger:.12, ease, immediateRender:false, scrollTrigger: { trigger: '#album', start: 'top 80%', once: true }});
 
   ScrollTrigger.create({
     trigger: '#gallery', start: 'top 82%', once: true,
     onEnter() { initWheel(); }
   });
 
-  gsap.from('.rsvp-card', {
-    opacity: 0, y: 30, duration: .8, ease,
-    scrollTrigger: { trigger: '#rsvp', start: 'top 80%', once: true }
-  });
-  gsap.from(['.rsvp-ornament','.rsvp-inner .lbl','.rsvp-inner .ttl','.rsvp-text','.rsvp-divider','.rsvp-toggle','.rsvp-btn','.rsvp-deadline'], {
-    opacity: 0, y: 16, duration: .55, stagger: .1, ease,
-    scrollTrigger: { trigger: '.rsvp-card', start: 'top 78%', once: true }
-  });
+  gsap.fromTo('.rsvp-card', {opacity:0, y:30}, {opacity:1, y:0, duration:.8, ease, immediateRender:false, scrollTrigger: { trigger: '#rsvp', start: 'top 80%', once: true }});
+  gsap.fromTo(['.rsvp-ornament','.rsvp-inner .lbl','.rsvp-inner .ttl','.rsvp-text','.rsvp-divider','.rsvp-toggle','.rsvp-btn','.rsvp-deadline'], {opacity:0, y:16}, {opacity:1, y:0, duration:.55, stagger:.1, ease, immediateRender:false, scrollTrigger: { trigger: '.rsvp-card', start: 'top 78%', once: true }});
 
-  gsap.from('#footer > *', {
-    opacity: 0, y: 22, duration: .65, stagger: .12, ease,
-    scrollTrigger: { trigger: '#footer', start: 'top 90%', once: true }
-  });
+  gsap.fromTo('#footer > *', {opacity:0, y:22}, {opacity:1, y:0, duration:.65, stagger:.12, ease, immediateRender:false, scrollTrigger: { trigger: '#footer', start: 'top 90%', once: true }});
 }
 
 /* ── COUNTDOWN ─────────────────────────────────────── */
