@@ -30,6 +30,7 @@
   --card-bg:   rgba(10,9,8,.55);
   --card-border: rgba(212,197,178,.14);
   --glow:      rgba(212,197,178,.08);
+  --gold-grad: linear-gradient(135deg,#8A7A62 0%,#D4C5B2 26%,#F2ECE2 50%,#D4C5B2 74%,#8A7A62 100%);
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -82,26 +83,71 @@ section>*{position:relative;z-index:1}
   transition:width .08s linear;pointer-events:none;
 }
 
-.music-btn{
-  position:fixed;bottom:22px;right:22px;width:48px;height:48px;
-  border-radius:50%;background:rgba(0,0,0,.85);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(212,197,178,.3);color:var(--gold);font-size:18px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;z-index:999;
-  box-shadow:0 4px 24px rgba(0,0,0,.5),0 0 0 1px rgba(212,197,178,.08);
-  transition:all .3s var(--spring);
+/* ── VINILO / MÚSICA ── */
+.vinyl-btn{
+  position:fixed;bottom:22px;right:22px;z-index:999;
+  width:72px;height:72px;border:none;background:transparent;
+  cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;
+  filter:drop-shadow(0 6px 20px rgba(0,0,0,.65));
+  transition:transform .3s var(--spring);
 }
-.music-btn:active{transform:scale(.88)}
-.music-btn.on{border-color:var(--gold);background:rgba(212,197,178,.14);
-  animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(212,197,178,.35),0 4px 24px rgba(0,0,0,.5)}
-  50%{box-shadow:0 0 0 10px rgba(212,197,178,0),0 4px 24px rgba(0,0,0,.5)}
+.vinyl-btn:active{transform:scale(.92)}
+.vinyl-btn:focus-visible{outline:2px solid var(--gold);outline-offset:6px;border-radius:50%}
+.vinyl-btn::before{
+  content:'';position:absolute;inset:-7px;border-radius:50%;
+  border:1.5px solid rgba(212,197,178,.55);
+  opacity:0;pointer-events:none;transition:opacity .35s;
+}
+.vinyl-btn.is-playing::before{opacity:1;animation:vinyl-ring 2.4s ease-out infinite}
+@keyframes vinyl-ring{
+  0%  {box-shadow:0 0 0 0    rgba(212,197,178,.45)}
+  65% {box-shadow:0 0 0 14px rgba(212,197,178,0)}
+  100%{box-shadow:0 0 0 0    rgba(212,197,178,0)}
+}
+.vinyl{
+  display:block;width:72px;height:72px;border-radius:50%;
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255,255,255,.10) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%,
+      #12100C 0%,  #12100C 33%,
+      rgba(255,255,255,.07) 33.5%, #12100C 34%,
+      #12100C 37%, rgba(255,255,255,.04) 37.5%, #12100C 38%,
+      #12100C 41%, rgba(255,255,255,.06) 41.5%, #12100C 42%,
+      #12100C 45%, rgba(255,255,255,.04) 45.5%, #12100C 46%,
+      #12100C 49%, rgba(255,255,255,.05) 49.5%, #12100C 50%,
+      #12100C 53%, rgba(255,255,255,.04) 53.5%, #12100C 54%,
+      #12100C 57%, rgba(255,255,255,.06) 57.5%, #12100C 58%,
+      #12100C 61%, rgba(255,255,255,.04) 61.5%, #12100C 62%,
+      #12100C 65%, rgba(255,255,255,.05) 65.5%, #12100C 66%,
+      #12100C 69%, rgba(255,255,255,.04) 69.5%, #12100C 70%,
+      #12100C 73%, rgba(255,255,255,.06) 73.5%, #12100C 74%,
+      #12100C 78%, rgba(255,255,255,.04) 78.5%, #12100C 79%,
+      #12100C 83%, rgba(255,255,255,.05) 83.5%, #12100C 84%,
+      #12100C 88%, rgba(255,255,255,.04) 88.5%, #12100C 89%,
+      #12100C 93%, rgba(255,255,255,.06) 93.5%, #12100C 94%,
+      #12100C 100%
+    );
+  animation:vinyl-spin 3.8s linear infinite paused;
+}
+.vinyl.is-playing{animation-play-state:running}
+@keyframes vinyl-spin{to{transform:rotate(360deg)}}
+.vinyl-label{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:27px;height:27px;border-radius:50%;
+  background:
+    radial-gradient(circle at 38% 35%, rgba(255,255,255,.22) 0%, transparent 55%),
+    conic-gradient(from 0deg,#6B5B45,#D4C5B2 18%,#E9E0D4 36%,#D4C5B2 54%,#6B5B45 72%,#D4C5B2 90%,#E9E0D4,#D4C5B2,#6B5B45);
+  box-shadow:0 0 0 1.5px rgba(212,197,178,.5), inset 0 1px 3px rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+}
+.vinyl-hole{
+  width:7px;height:7px;border-radius:50%;background:#0A0806;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.8);flex-shrink:0;
 }
 
 #toast{
-  position:fixed;bottom:78px;left:50%;
+  position:fixed;bottom:108px;left:50%;
   transform:translateX(-50%) translateY(16px);
   background:rgba(0,0,0,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border:1px solid var(--gold);color:var(--gold);
@@ -155,12 +201,13 @@ section>*{position:relative;z-index:1}
 .btn:active::before{opacity:1}
 .btn+.btn{margin-top:12px}
 .btn-gold{
-  background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:#fff;font-weight:600;
+  background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--ink);font-weight:700;
   border:none;
   box-shadow:0 4px 22px rgba(212,197,178,.45),0 1px 3px rgba(0,0,0,.3),0 0 20px rgba(212,197,178,.2);
   transition:all .3s var(--spring);
-  text-shadow:0 1px 2px rgba(0,0,0,.3);
+  text-shadow:none;
 }
+.btn-gold svg{stroke:var(--ink)}
 .btn-gold:active{background:linear-gradient(135deg,var(--gold-lt),var(--gold));transform:scale(.96)}
 
 /* ── SECTION DIVIDERS ──────────────────── */
@@ -594,19 +641,96 @@ section>*{position:relative;z-index:1}
 .gf-copy{margin-top:14px;width:100%;font-size:clamp(10px,2.6vw,12px);padding:clamp(12px,3vw,15px) 16px}
 
 /* ── SOBRE INTERACTIVO ── */
-.env-interactive{display:flex;flex-direction:column;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;border:none;background:none;padding:0}
-.env-body{perspective:700px;position:relative;width:260px;height:200px;animation:env-breathe 3.6s ease-in-out infinite}
-.env-body svg.env-svg{width:100%;height:100%}
-.env-flap-wrap{position:absolute;top:46px;left:18px;width:224px;height:86px;transform-origin:top center;transform-style:preserve-3d;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:transform .65s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:2}
+/* ── LLUVIA DE SOBRES ── */
+.env-rain{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.env-rain-item{position:absolute;top:-46px;will-change:transform;opacity:0}
+#gifts .env-stage{position:relative;z-index:1}
+.env-interactive{display:flex;flex-direction:column;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;outline:none;border:none;background:none;padding:0;margin:26px auto 0;opacity:0}
+.env-body{perspective:700px;position:relative;width:min(258px,74vw);aspect-ratio:260/200;filter:drop-shadow(0 10px 26px rgba(0,0,0,.55))}
+.env-body svg.env-svg{width:100%;height:100%;display:block}
+.env-flap-wrap{position:absolute;top:23%;left:6.9%;width:86.2%;height:43%;transform-origin:top center;transform-style:preserve-3d;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:transform .65s cubic-bezier(.4,0,.2,1);pointer-events:none;z-index:2}
 .env-interactive.open .env-flap-wrap{transform:rotateX(-175deg)}
-.env-open-content{overflow:hidden;max-height:0;opacity:0;transition:max-height .55s .3s ease,opacity .4s .38s ease;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 20px;text-align:center;pointer-events:none}
-.env-interactive.open .env-open-content{max-height:240px;opacity:1;pointer-events:auto}
-.env-mailbox-icon{width:40px;height:40px;color:var(--gold);margin-top:10px}
-.env-title{font-family:'Great Vibes',cursive;font-size:30px;color:var(--cream);letter-spacing:.5px;line-height:1.2}
-.env-desc{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:var(--cream);opacity:.6;line-height:1.75}
-.env-tap-hint{font-family:'Raleway',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:.7;margin-top:6px;transition:opacity .3s}
-.env-interactive.open~.env-tap-hint{opacity:0;pointer-events:none}
-@keyframes env-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.env-seal{position:absolute;top:52%;left:50%;width:23%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:3;transition:opacity .35s ease,transform .5s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.env-interactive.open .env-seal{opacity:0;transform:translate(-50%,-50%) scale(.7)}
+.env-open-content{overflow:hidden;max-height:0;opacity:0;transition:max-height .55s .3s ease,opacity .4s .38s ease;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 16px;text-align:center;pointer-events:none}
+.env-interactive.open .env-open-content{max-height:320px;opacity:1;pointer-events:auto;margin-top:20px}
+.env-mailbox-icon{width:42px;height:42px;color:var(--gold);margin-top:6px}
+.env-title{font-family:'Great Vibes',cursive;font-size:clamp(28px,8vw,34px);line-height:1.4;padding:.08em 0;background:var(--gold-grad);background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--gold-lt);animation:goldFlow 7s ease-in-out infinite}
+.env-desc{font-family:'Cormorant Garamond',serif;font-size:clamp(15px,4vw,17px);font-weight:500;font-style:italic;color:var(--cream);opacity:.82;line-height:1.75;max-width:300px}
+.env-tap-hint{font-family:'Raleway',sans-serif;font-size:clamp(10px,2.6vw,12px);letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-top:18px;opacity:0;transition:opacity .5s ease;position:relative;z-index:1}
+.env-tap-hint.show{opacity:.85;animation:envHintPulse 2.4s ease-in-out infinite}
+.env-interactive.open~.env-tap-hint{opacity:0!important;animation:none;pointer-events:none}
+@keyframes envHintPulse{0%,100%{opacity:.5}50%{opacity:.95}}
+@keyframes goldFlow{0%,100%{background-position:0% center}50%{background-position:100% center}}
+.env-body.landed{animation:envBreathe 3.6s ease-in-out infinite}
+@keyframes envBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+@media(prefers-reduced-motion:reduce){.env-body.landed,.env-tap-hint.show{animation:none!important}}
+
+/* ── CAJA DE REGALO + CONFETTI ── */
+.giftbox-stage{position:relative;margin:clamp(28px,7vw,40px) auto 0;max-width:560px;min-height:290px;display:flex;align-items:center;justify-content:center}
+.giftbox-stage>div{opacity:1;text-align:center}
+.giftbox{position:relative;width:min(190px,52vw);cursor:pointer;background:none;border:none;padding:0;transition:transform .45s cubic-bezier(.2,.7,.2,1);-webkit-tap-highlight-color:transparent}
+.giftbox:hover{transform:translateY(-8px) scale(1.03)}
+.giftbox:focus-visible{outline:2px solid var(--gold);outline-offset:10px;border-radius:6px}
+.giftbox.is-open{pointer-events:none}
+.giftbox svg{width:100%;height:auto;display:block;filter:drop-shadow(0 18px 34px rgba(0,0,0,.6))}
+.giftbox-lid{transform-origin:50% 100%;transition:transform .6s cubic-bezier(.34,1.4,.5,1),opacity .55s ease}
+.giftbox.is-open .giftbox-lid{transform:translateY(-52px) rotate(-14deg);opacity:0}
+.giftbox-cta{display:block;margin-top:22px;font-family:'Raleway',sans-serif;font-size:clamp(10px,2.6vw,12px);font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);animation:giftPulse 2.6s ease-in-out infinite;transition:opacity .4s}
+@keyframes giftPulse{0%,100%{opacity:.6}50%{opacity:1}}
+.giftbox-cta.is-hidden{opacity:0;animation:none}
+#confetti-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+
+/* ── MODAL MESA DE REGALOS ── */
+.gift-backdrop{
+  position:fixed;inset:0;z-index:1200;
+  background:rgba(6,5,4,.74);
+  backdrop-filter:blur(16px) saturate(1.05);-webkit-backdrop-filter:blur(16px) saturate(1.05);
+  opacity:0;pointer-events:none;transition:opacity .45s ease;
+  display:flex;align-items:center;justify-content:center;padding:clamp(16px,4vw,40px);
+}
+.gift-backdrop.is-open{opacity:1;pointer-events:auto}
+body.gift-locked{overflow:hidden}
+.gift-reveal{
+  position:relative;width:100%;max-width:460px;max-height:calc(100dvh - 32px);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:10px;
+  background:linear-gradient(180deg,#1a1811,#100e0a);
+  border:1px solid rgba(212,197,178,.42);
+  padding:clamp(34px,6vw,44px) clamp(22px,6vw,34px) clamp(28px,6vw,36px);
+  box-shadow:0 34px 90px rgba(0,0,0,.7),inset 0 0 0 1px rgba(212,197,178,.08);
+  opacity:0;transform:translateY(26px) scale(.94);
+  transition:opacity .5s ease,transform .55s cubic-bezier(.2,.7,.2,1);
+  text-align:center;
+}
+.gift-backdrop.is-open .gift-reveal{opacity:1;transform:none}
+.gift-reveal::before{content:"";position:absolute;inset:9px;border:1px solid rgba(212,197,178,.16);border-radius:6px;pointer-events:none}
+.gift-reveal-eyebrow{font-family:'Raleway',sans-serif;font-size:clamp(9px,2.4vw,11px);font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:18px}
+.gift-close{
+  position:absolute;top:12px;right:12px;z-index:3;width:38px;height:38px;border-radius:50%;
+  border:1px solid rgba(212,197,178,.45);background:rgba(10,9,8,.7);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+  transition:background .3s,color .3s,transform .3s;
+}
+.gift-close:hover{background:var(--gold);color:var(--ink);transform:rotate(90deg)}
+.gift-close:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.gift-close svg{width:16px;height:16px}
+.gr-logo{height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.gr-logo img{max-height:52px;max-width:210px;width:auto;height:auto;display:block}
+.gr-title{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,6vw,26px);color:var(--cream);margin-bottom:10px}
+.gr-desc{font-family:'Raleway',sans-serif;font-size:clamp(14px,3.8vw,16px);line-height:1.65;color:var(--cream);opacity:.8;font-weight:400;margin-bottom:24px}
+.gr-desc b{font-weight:600;color:var(--gold);opacity:1}
+.gr-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:15px 32px;border:none;border-radius:8px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--ink);
+  font-family:'Raleway',sans-serif;font-size:clamp(10px,2.8vw,12px);font-weight:700;
+  letter-spacing:.24em;text-transform:uppercase;text-decoration:none;cursor:pointer;
+  box-shadow:0 6px 26px rgba(212,197,178,.4);transition:transform .3s var(--spring)
+}
+.gr-btn:active{transform:scale(.96)}
+.gr-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.gf-sep{width:60%;max-width:220px;height:1px;margin:clamp(34px,8vw,46px) auto clamp(4px,1vw,8px);background:linear-gradient(to right,transparent,rgba(212,197,178,.3),transparent)}
+
 
 /* ── ALBUM ─────────────────────────────── */
 #album{
@@ -743,7 +867,9 @@ section>*{position:relative;z-index:1}
   <source src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/audio/boda-neidy-y-cesar/cancion.mp3" type="audio/mpeg">
 </audio>
 
-<button class="music-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Música">♪</button>
+<button class="vinyl-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Reproducir música">
+  <span class="vinyl" id="vinylDisc"><span class="vinyl-label"><span class="vinyl-hole"></span></span></span>
+</button>
 
 <div id="toast"></div>
 
@@ -819,7 +945,7 @@ section>*{position:relative;z-index:1}
 
   <div class="loc-card">
     <p class="loc-type" style="text-align:center">✦  Recepción</p>
-    <h3 class="loc-name" style="text-align:center;font-family:'Great Vibes',cursive;font-size:clamp(28px,8vw,38px)">Salón Real SAYIL</h3>
+    <h3 class="loc-name" style="text-align:center;font-family:'Great Vibes',cursive;font-size:clamp(28px,8vw,38px)">Salón Real Sayil</h3>
     <div class="loc-time" style="text-align:center">5:00 <em>PM</em></div>
     <p class="loc-addr" style="text-align:center">1a Cda. Sor Juana Inés de la Cruz · Acolman, Estado de México</p>
     <a href="https://maps.app.goo.gl/p7rwSMH5GpBTUnVdA"
@@ -837,7 +963,7 @@ section>*{position:relative;z-index:1}
   <h2 class="ttl" style="font-size:clamp(22px,6vw,28px)">Guarda la Fecha</h2>
   <div class="gline"></div>
   <p class="cal-sub">Agrega nuestra boda a tu calendario<br>para no perderte ni un momento.</p>
-  <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Boda+de+C%C3%A9sar+%26+Neidy&dates=20261107T160000/20261108T000000&details=Ceremonia+Religiosa+4:00+PM+-+Iglesia+de+Santa+Mar%C3%ADa+%7C+Recepci%C3%B3n+5:00+PM+-+Sal%C3%B3n+Real+SAYIL&location=Acolman+de+Nezahualc%C3%B3yotl%2C+Estado+de+M%C3%A9xico"
+  <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Boda+de+C%C3%A9sar+%26+Neidy&dates=20261107T160000/20261108T000000&details=Ceremonia+Religiosa+4:00+PM+-+Iglesia+de+Santa+Mar%C3%ADa+%7C+Recepci%C3%B3n+5:00+PM+-+Sal%C3%B3n+Real+Sayil&location=Acolman+de+Nezahualc%C3%B3yotl%2C+Estado+de+M%C3%A9xico"
      target="_blank" rel="noopener" id="calBtn"
      class="btn btn-gold" style="max-width:310px;margin:0 auto;display:flex;padding:16px 24px;font-size:clamp(11px,3vw,13px);letter-spacing:3px;border:none;box-shadow:0 6px 28px rgba(212,197,178,.55),0 0 30px rgba(212,197,178,.25),0 2px 4px rgba(0,0,0,.3)">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -893,58 +1019,71 @@ section>*{position:relative;z-index:1}
 
 <!-- 7. MESA DE REGALOS -->
 <section id="gifts">
-  <span class="lbl">Tu presencia es nuestro mejor regalo</span>
-  <h2 class="ttl">Mesa de Regalos</h2>
-  <div class="gline"></div>
-  <p class="gf-sub">Si deseas obsequiarnos algo especial,<br>compartimos contigo nuestras opciones.</p>
+  <div class="env-rain" id="envRain" aria-hidden="true"></div>
+  <div class="env-stage">
+    <span class="lbl">Tu presencia es nuestro mejor regalo</span>
+    <h2 class="ttl">Mesa de Regalos</h2>
+    <div class="gline"></div>
+    <p class="gf-sub">Si deseas obsequiarnos algo especial,<br>compartimos contigo nuestras opciones.</p>
 
-  <div class="gf-card gf-bank">
-    <div class="gf-card-top">
-      <div class="gf-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg></div>
-      <p class="gf-ttl">Liverpool</p>
-    </div>
-    <div class="gf-bank-info">
-      <p class="gf-bk-line">
-        <span class="gf-bk-lbl">Lista de regalos</span>
-      </p>
-      <a class="btn gf-copy" href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51853920" target="_blank" rel="noopener" style="text-decoration:none">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
-        Ver mesa de regalos
-      </a>
-    </div>
-  </div>
-
-  <div style="margin:28px auto 0;display:flex;flex-direction:column;align-items:center;gap:0">
-    <button class="env-interactive" aria-label="Sobre — toca para abrir" aria-expanded="false" type="button">
-      <div class="env-body">
-        <svg class="env-svg" viewBox="0 0 260 200" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="fr-env-fill" x1="0" y1="1" x2="1" y2="0">
-              <stop offset="0%" stop-color="#181610"/>
-              <stop offset="100%" stop-color="#2a2418"/>
-            </linearGradient>
-          </defs>
-          <rect x="18" y="52" width="224" height="132" rx="10" fill="url(#fr-env-fill)" stroke="rgba(212,197,178,.5)" stroke-width="1.4"/>
-          <path d="M18 184 L130 110 L242 184" stroke="rgba(212,197,178,.35)" stroke-width="1" fill="none"/>
-          <line x1="90" y1="30" x2="90" y2="20" stroke="rgba(212,197,178,.6)" stroke-width="1.3" stroke-linecap="round" opacity=".55"/>
-          <line x1="130" y1="24" x2="130" y2="14" stroke="rgba(212,197,178,.6)" stroke-width="1.3" stroke-linecap="round" opacity=".7"/>
-          <line x1="170" y1="30" x2="170" y2="20" stroke="rgba(212,197,178,.6)" stroke-width="1.3" stroke-linecap="round" opacity=".55"/>
-          <line x1="110" y1="18" x2="110" y2="10" stroke="rgba(233,224,212,.5)" stroke-width="1" stroke-linecap="round" opacity=".4"/>
-          <line x1="150" y1="18" x2="150" y2="10" stroke="rgba(233,224,212,.5)" stroke-width="1" stroke-linecap="round" opacity=".4"/>
-          <circle cx="130" cy="118" r="16" fill="rgba(212,197,178,.18)" stroke="rgba(212,197,178,.55)" stroke-width="1"/>
-          <text x="130" y="123" text-anchor="middle" font-family="'Great Vibes',cursive" font-size="11" fill="var(--gold)" opacity=".9">C&amp;N</text>
-        </svg>
-        <div class="env-flap-wrap" aria-hidden="true">
-          <svg viewBox="0 0 224 86" preserveAspectRatio="none" style="width:100%;height:100%">
+    <div class="giftbox-stage">
+      <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+      <div>
+        <button class="giftbox" id="giftbox" type="button" aria-label="Abrir la mesa de regalos" aria-expanded="false" aria-controls="gift-reveal">
+          <svg viewBox="0 0 200 190" fill="none" aria-hidden="true">
+            <rect x="26" y="72" width="148" height="104" rx="4" fill="#221E16"/>
+            <rect x="26" y="72" width="148" height="104" rx="4" fill="url(#gbShade)"/>
+            <rect x="88" y="72" width="24" height="104" fill="#D4C5B2"/>
+            <rect x="26" y="112" width="148" height="15" fill="#D4C5B2"/>
+            <rect x="26.7" y="72.7" width="146.6" height="102.6" rx="3.3" stroke="#8A7A62" stroke-width="1.4"/>
+            <g class="giftbox-lid">
+              <rect x="16" y="54" width="168" height="26" rx="4" fill="#2E2820"/>
+              <rect x="16.7" y="54.7" width="166.6" height="24.6" rx="3.3" stroke="#8A7A62" stroke-width="1.4"/>
+              <rect x="88" y="54" width="24" height="26" fill="#D4C5B2"/>
+              <path d="M100 54 C100 40 84 26 70 32 C58 37 62 52 78 54 Z" fill="#D4C5B2" stroke="#8A7A62" stroke-width="1.2"/>
+              <path d="M100 54 C100 40 116 26 130 32 C142 37 138 52 122 54 Z" fill="#D4C5B2" stroke="#8A7A62" stroke-width="1.2"/>
+              <circle cx="100" cy="52" r="8" fill="#F2ECE2" stroke="#8A7A62" stroke-width="1.2"/>
+            </g>
             <defs>
-              <linearGradient id="fr-flap-fill" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0%" stop-color="rgba(212,197,178,.4)"/>
-                <stop offset="100%" stop-color="#181610"/>
+              <linearGradient id="gbShade" x1="26" y1="72" x2="174" y2="176" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#ffffff" stop-opacity=".12"/><stop offset="1" stop-color="#000000" stop-opacity=".28"/>
               </linearGradient>
             </defs>
-            <path d="M0 0 L112 86 L224 0 Z" fill="url(#fr-flap-fill)" stroke="rgba(212,197,178,.5)" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <span class="giftbox-cta" id="giftbox-cta">Toca el regalo</span>
+      </div>
+    </div>
+
+    <div class="gf-sep"></div>
+
+    <button class="env-interactive" id="envGift" type="button" aria-label="Sobre — toca para abrir" aria-expanded="false">
+      <div class="env-body" id="envGiftBody">
+        <svg class="env-svg" viewBox="0 0 260 200" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="envPaper" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="#F7F0E3"/><stop offset="100%" stop-color="#E7DBC6"/>
+            </linearGradient>
+          </defs>
+          <rect x="18" y="52" width="224" height="132" rx="8" fill="url(#envPaper)" stroke="rgba(138,122,98,.55)" stroke-width="1.4"/>
+          <path d="M18 184 L130 110 L242 184" stroke="rgba(138,122,98,.35)" stroke-width="1" fill="none"/>
+        </svg>
+        <div class="env-flap-wrap" aria-hidden="true">
+          <svg viewBox="0 0 224 86" preserveAspectRatio="none" style="width:100%;height:100%;display:block">
+            <defs>
+              <linearGradient id="envFlap" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stop-color="#E7DBC6"/><stop offset="100%" stop-color="#FBF6EC"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 0 L112 86 L224 0 Z" fill="url(#envFlap)" stroke="rgba(138,122,98,.55)" stroke-width="1.5" stroke-linejoin="round"/>
           </svg>
         </div>
+        <svg class="env-seal" viewBox="0 0 60 60" aria-hidden="true">
+          <circle cx="30" cy="30" r="28" fill="#4A3F2C"/>
+          <circle cx="30" cy="30" r="28" fill="none" stroke="#2A2418" stroke-width="2" opacity=".55"/>
+          <circle cx="30" cy="30" r="21.5" fill="none" stroke="#E9E0D4" stroke-width="1.1" opacity=".9"/>
+          <text x="30" y="37" text-anchor="middle" font-family="'Great Vibes',cursive" font-size="22" fill="#E9E0D4">C&amp;N</text>
+        </svg>
       </div>
       <div class="env-open-content" aria-live="polite">
         <svg class="env-mailbox-icon" viewBox="0 0 52 52" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -955,12 +1094,25 @@ section>*{position:relative;z-index:1}
           <rect x="20" y="28" width="12" height="2.5" rx="1.25" fill="currentColor" stroke="none" opacity=".4"/>
         </svg>
         <p class="env-title">Lluvia de Sobres</p>
-        <p class="env-desc">El día de la boda habrá un buzón especial<br>donde podrás depositar tu sobre con cariño.</p>
+        <p class="env-desc">El día de la boda habrá un buzón especial donde podrás depositar tu sobre con mucho cariño.</p>
       </div>
     </button>
-    <p class="env-tap-hint">Toca el sobre</p>
+    <p class="env-tap-hint" id="envGiftHint">Toca para abrir</p>
   </div>
 </section>
+
+<div class="gift-backdrop" id="gift-backdrop" role="dialog" aria-modal="true" aria-label="Mesa de regalos">
+  <div class="gift-reveal" id="gift-reveal">
+    <button class="gift-close" id="gift-close" type="button" aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="gift-reveal-eyebrow">Nuestra mesa de regalos</div>
+    <div class="gr-logo"><img src="liverpool-logo.png" alt="Liverpool" width="508" height="121" decoding="async"></div>
+    <div class="gr-title">Lista de regalos</div>
+    <div class="gr-desc">Número de evento <b>51853920</b><br>Envío directo a los novios</div>
+    <a class="gr-btn" href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51853920" target="_blank" rel="noopener">Ver mesa</a>
+  </div>
+</div>
 
 
 <!-- 8. ÁLBUM COMPARTIDO -->
@@ -1166,6 +1318,8 @@ document.addEventListener('DOMContentLoaded', () => {
     spawnParticles();
     initBgOrbs();
     scrollAnims();
+    initEnvelopeRain();
+    initGiftBox();
     countdown();
     setInterval(countdown, 1000);
     startMusicOnOpen();
@@ -1217,8 +1371,7 @@ function startMusicOnOpen() {
   var mBtn = document.getElementById('musicBtn');
   aud.play().then(function() {
     playing = true;
-    mBtn.innerHTML = '♬';
-    mBtn.classList.add('on');
+    setVinyl(true);
   }).catch(function() {});
 }
 
@@ -1523,21 +1676,216 @@ const aud = document.getElementById('bgMusic');
 const mBtn = document.getElementById('musicBtn');
 let playing = false;
 
+function setVinyl(on) {
+  var disc = document.getElementById('vinylDisc');
+  mBtn.classList.toggle('is-playing', on);
+  if (disc) disc.classList.toggle('is-playing', on);
+  mBtn.setAttribute('aria-label', on ? 'Pausar música' : 'Reproducir música');
+}
+
 function toggleMusic() {
-  if (playing) { aud.pause(); mBtn.innerHTML='♪'; mBtn.classList.remove('on'); }
-  else { aud.play().catch(()=>{}); mBtn.innerHTML='♬'; mBtn.classList.add('on'); }
+  if (playing) { aud.pause(); setVinyl(false); }
+  else { aud.play().catch(()=>{}); setVinyl(true); }
   playing = !playing;
 }
 
-/* ── SOBRE INTERACTIVO (lluvia de sobres) ──────────── */
-(function(){
-  var env = document.querySelector('.env-interactive');
-  if(!env) return;
-  env.addEventListener('click', function(){
-    env.classList.toggle('open');
-    env.setAttribute('aria-expanded', env.classList.contains('open'));
-  });
-})();
+/* ── LLUVIA DE SOBRES ─────────────────── */
+function initEnvelopeRain(){
+  var sec=document.getElementById('gifts'),rain=document.getElementById('envRain'),
+      btn=document.getElementById('envGift'),body=document.getElementById('envGiftBody'),
+      hint=document.getElementById('envGiftHint');
+  if(!sec||!rain||!btn)return;
+  var raining=true,landed=false,spawnCall=null,alive=0;
+  var MAX_ALIVE=18;
+
+  function makeEnvelope(){
+    if(alive>=MAX_ALIVE)return;
+    alive++;
+    var el=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    el.setAttribute('viewBox','0 0 34 24');
+    el.setAttribute('class','env-rain-item');
+    var w=16+Math.random()*16;
+    el.style.width=w+'px';el.style.height=(w*24/34)+'px';
+    el.style.left=(Math.random()*100)+'%';
+    el.innerHTML='<rect x="1" y="1" width="32" height="22" rx="2.5" fill="#F0E7D6" stroke="#8A7A62" stroke-width="1.2"/>'+
+                 '<path d="M1 1 L17 13 L33 1" fill="none" stroke="#8A7A62" stroke-width="1.2" stroke-linejoin="round"/>';
+    rain.appendChild(el);
+    var H=sec.offsetHeight+80,dur=5+Math.random()*4;
+    function kill(){if(el.parentNode){el.remove();alive--;}}
+    gsap.timeline({onComplete:kill})
+      .fromTo(el,{y:-46,x:0,rotation:(Math.random()-.5)*50,opacity:0},
+                 {y:H,x:(Math.random()-.5)*70,rotation:(Math.random()-.5)*160,
+                  duration:dur,ease:'none'},0)
+      .fromTo(el,{opacity:0},{opacity:.75,duration:dur*.18,ease:'power1.out'},0)
+      .to(el,{opacity:0,duration:dur*.25,ease:'power1.in'},dur*.75);
+  }
+
+  function scheduleSpawn(){
+    spawnCall=gsap.delayedCall(.52,function(){
+      if(!raining)return;
+      makeEnvelope();
+      scheduleSpawn();
+    });
+  }
+  function startRain(){
+    for(var i=0;i<7;i++)gsap.delayedCall(i*.26,makeEnvelope);
+    scheduleSpawn();
+  }
+  function stopRain(){
+    raining=false;
+    if(spawnCall)spawnCall.kill();
+    gsap.to(rain,{opacity:0,duration:1.1,ease:'power2.out',
+      onComplete:function(){rain.innerHTML='';alive=0;}});
+  }
+
+  function land(){
+    if(landed)return;landed=true;
+    stopRain();
+    gsap.fromTo(btn,
+      {opacity:0,y:-150,rotation:-12,scale:.82},
+      {opacity:1,y:0,rotation:0,scale:1,duration:1.15,ease:'back.out(1.5)',
+       onComplete:function(){
+         if(body)body.classList.add('landed');
+         if(hint)hint.classList.add('show');
+       }});
+  }
+
+  startRain();
+  /* 'center 55%' y no 'center center': el reveal generico desplaza 28px las
+     secciones aun no visibles y el umbral exacto nunca se alcanza. */
+  ScrollTrigger.create({trigger:sec,start:'center 55%',once:true,onEnter:land,onEnterBack:land});
+
+  function toggle(e){
+    if(e)e.preventDefault();
+    if(!landed)return;
+    var open=btn.classList.toggle('open');
+    btn.setAttribute('aria-expanded',open?'true':'false');
+    if(open&&body)body.classList.remove('landed');
+    ScrollTrigger.refresh();
+  }
+  btn.addEventListener('click',toggle);
+}
+
+/* ── CAJA DE REGALO + CONFETTI + MODAL ─────── */
+function initGiftBox(){
+  var box    = document.getElementById('giftbox');
+  var cta    = document.getElementById('giftbox-cta');
+  var reveal = document.getElementById('gift-backdrop');
+  var closeB = document.getElementById('gift-close');
+  var canvas = document.getElementById('confetti-canvas');
+  if(!box||!reveal)return;
+
+  function burst(){
+    if(!canvas || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var stage = canvas.parentElement;
+    var W = stage.offsetWidth, H = stage.offsetHeight;
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    ctx.scale(dpr,dpr);
+
+    var colors = ['#D4C5B2','#E9E0D4','#8A7A62','#FFFFFF','#B9A88C','#F2ECE2'];
+    var parts = [];
+    var cx = W/2, cy = H/2;
+    var n = window.innerWidth < 520 ? 70 : 120;
+    for(var i=0;i<n;i++){
+      var a = (Math.PI * 2 * i / n) + (i % 7) * 0.11;
+      var sp = 3.4 + (i % 11) * 0.62;
+      parts.push({
+        x:cx, y:cy,
+        vx: Math.cos(a) * sp * (0.6 + (i%5)*0.14),
+        vy: Math.sin(a) * sp * (0.6 + (i%3)*0.2) - 3.6,
+        w: 5 + (i%4)*2.4, h: 3 + (i%3)*2,
+        rot: (i%360) * 0.0175,
+        vr: ((i%2?1:-1)) * (0.06 + (i%5)*0.02),
+        c: colors[i % colors.length], life: 1
+      });
+    }
+    var t0 = null;
+    function frame(ts){
+      if(t0 === null) t0 = ts;
+      var el = (ts - t0) / 1000;
+      ctx.clearRect(0,0,W,H);
+      var aliveP = false;
+      for(var i=0;i<parts.length;i++){
+        var pt = parts[i];
+        pt.vy += 0.14; pt.vx *= 0.992;
+        pt.x += pt.vx; pt.y += pt.vy; pt.rot += pt.vr;
+        pt.life = Math.max(0, 1 - el/2.6);
+        if(pt.life > 0 && pt.y < H + 40){
+          aliveP = true;
+          ctx.save();
+          ctx.globalAlpha = pt.life;
+          ctx.translate(pt.x, pt.y);
+          ctx.rotate(pt.rot);
+          ctx.fillStyle = pt.c;
+          ctx.fillRect(-pt.w/2, -pt.h/2, pt.w, pt.h);
+          ctx.restore();
+        }
+      }
+      if(aliveP) requestAnimationFrame(frame);
+      else ctx.clearRect(0,0,W,H);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  var isOpen = false, viaTeclado = false, savedScrollY = 0;
+
+  /* la seccion recorta el position:fixed → el modal se mueve al body */
+  if(reveal.parentElement !== document.body) document.body.appendChild(reveal);
+
+  function lockScroll(){
+    savedScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    document.body.style.position='fixed';
+    document.body.style.top=(-savedScrollY)+'px';
+    document.body.style.left='0';document.body.style.right='0';
+    document.body.style.width='100%';
+    document.body.classList.add('gift-locked');
+  }
+  function unlockScroll(){
+    document.body.classList.remove('gift-locked');
+    document.body.style.position='';document.body.style.top='';
+    document.body.style.left='';document.body.style.right='';
+    document.body.style.width='';
+    window.scrollTo(0, savedScrollY);
+  }
+
+  function openGift(){
+    if(isOpen) return;
+    isOpen = true;
+    box.classList.add('is-open');
+    box.setAttribute('aria-expanded','true');
+    if(cta) cta.classList.add('is-hidden');
+    burst();
+    setTimeout(function(){
+      reveal.classList.add('is-open');
+      lockScroll();
+      if(viaTeclado && closeB) closeB.focus();
+    }, 240);
+  }
+
+  function closeGift(){
+    if(!isOpen) return;
+    isOpen = false;
+    reveal.classList.remove('is-open');
+    unlockScroll();
+    setTimeout(function(){
+      box.classList.remove('is-open');
+      box.setAttribute('aria-expanded','false');
+      if(cta) cta.classList.remove('is-hidden');
+    }, 420);
+    if(viaTeclado) box.focus();
+    viaTeclado = false;
+  }
+
+  box.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' ') viaTeclado = true; });
+  box.addEventListener('mousedown',  function(){ viaTeclado = false; });
+  box.addEventListener('touchstart', function(){ viaTeclado = false; }, {passive:true});
+  box.addEventListener('click', openGift);
+  if(closeB) closeB.addEventListener('click', closeGift);
+  reveal.addEventListener('click', function(e){ if(e.target === reveal) closeGift(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && isOpen) closeGift(); });
+}
 
 /* ── RSVP · PANEL INTEGRATION (patrón estándar) ──────── */
 function initRSVP(){
