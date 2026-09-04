@@ -455,7 +455,43 @@ section>*{position:relative;z-index:1}
 #surprise{background:linear-gradient(180deg,var(--ink),#141209)}
 #spoiler{background:linear-gradient(180deg,#141209,var(--ink))}
 
-/* ── LISTAS DE HONOR (damas / best man) ── */
+/* ── BEST MAN · uno a uno en una sola tarjeta ── */
+.bm-stage{position:relative;max-width:400px;margin:clamp(22px,6vw,30px) auto 0}
+.bm-frame{
+  position:relative;border:1px solid rgba(212,197,178,.28);border-radius:12px;
+  background:linear-gradient(180deg,rgba(24,22,16,.72),rgba(10,9,8,.55));
+  padding:clamp(26px,6vw,32px) clamp(18px,5vw,26px);
+  box-shadow:0 18px 50px rgba(0,0,0,.45),inset 0 0 0 1px rgba(212,197,178,.05);
+  min-height:148px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.bm-frame::before,.bm-frame::after{
+  content:'';position:absolute;left:28%;right:28%;height:1px;
+  background:linear-gradient(to right,transparent,rgba(212,197,178,.35),transparent);
+}
+.bm-frame::before{top:11px}.bm-frame::after{bottom:11px}
+.bm-slide{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;padding:0 20px;text-align:center;
+  opacity:0;transform:translateY(12px);
+  transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);
+  pointer-events:none;
+}
+.bm-slide.is-active{opacity:1;transform:none}
+.bm-orn{width:34px;height:auto;opacity:.8;color:var(--gold)}
+.bm-nm{
+  font-family:'Great Vibes',cursive;font-size:clamp(30px,8.4vw,40px);
+  color:var(--cream);line-height:1.2;text-shadow:0 2px 14px rgba(0,0,0,.5);
+}
+.bm-dots{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px}
+.bm-dot{
+  width:7px;height:7px;border-radius:50%;padding:0;cursor:pointer;
+  border:1px solid rgba(212,197,178,.55);background:transparent;
+  transition:background .35s,transform .35s;
+}
+.bm-dot.is-active{background:var(--gold);transform:scale(1.4)}
+.bm-dot:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* ── LISTA DE DAMAS DE HONOR ── */
 .hon-list{
   display:grid;grid-template-columns:1fr 1fr;
   gap:clamp(9px,2.6vw,13px) clamp(10px,3vw,18px);
@@ -1784,18 +1820,51 @@ body.gift-locked{overflow:hidden}
   <span class="lbl">Nos acompañan</span>
   <h2 class="ttl">Best Man</h2>
   <div class="gline"></div>
-  <svg class="hon-icon" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
-  <div class="hon-list" id="bestList">
-    <span class="dh-item">Ricardo</span>
-    <span class="dh-item">David</span>
-    <span class="dh-item">Guillermo Javier</span>
-    <span class="dh-item">Ernesto</span>
-    <span class="dh-item">Román</span>
-    <span class="dh-item">Gerson</span>
-    <span class="dh-item">Misael</span>
-    <span class="dh-item">Edgar</span>
-    <span class="dh-item">Josué</span>
-    <span class="dh-item">César Hiram</span>
+
+  <div class="bm-stage">
+    <div class="bm-frame" id="bmFrame">
+      <div class="bm-slide is-active">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">Ricardo</p>
+      </div>
+      <div class="bm-slide">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">David</p>
+      </div>
+      <div class="bm-slide">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">Guillermo Javier</p>
+      </div>
+      <div class="bm-slide">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">Ernesto</p>
+      </div>
+      <div class="bm-slide">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">Román</p>
+      </div>
+      <div class="bm-slide">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">Gerson</p>
+      </div>
+      <div class="bm-slide">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">Misael</p>
+      </div>
+      <div class="bm-slide">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">Edgar</p>
+      </div>
+      <div class="bm-slide">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">Josué</p>
+      </div>
+      <div class="bm-slide">
+        <svg class="bm-orn" viewBox="0 0 40 34" fill="none" aria-hidden="true"><path d="M20 17 L8 10 C5 8.6 3 10.5 3 13.6 v6.8 C3 23.5 5 25.4 8 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M20 17 L32 10 C35 8.6 37 10.5 37 13.6 v6.8 C37 23.5 35 25.4 32 24 Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><rect x="16.6" y="13.6" width="6.8" height="6.8" rx="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        <p class="bm-nm">César Hiram</p>
+      </div>
+    </div>
+    <div class="bm-dots" id="bmDots"></div>
   </div>
 </section>
 
@@ -2395,7 +2464,8 @@ function scrollAnims() {
   gsap.fromTo(['#contact .ct-card','#contact .hosp-intro'], {opacity:0, y:22}, {opacity:1, y:0, duration:.7, stagger:.12, ease, immediateRender:false, scrollTrigger:{ trigger:'#contact', start:'top 82%', once:true }});
   gsap.fromTo(['#surprise .rev-lead','#surprise .rev-wrap'], {opacity:0, y:26}, {opacity:1, y:0, duration:.8, stagger:.14, ease, immediateRender:false, scrollTrigger:{ trigger:'#surprise', start:'top 82%', once:true }});
   gsap.fromTo(['#spoiler .rev-lead','#spoiler .rev-wrap'], {opacity:0, y:26}, {opacity:1, y:0, duration:.8, stagger:.14, ease, immediateRender:false, scrollTrigger:{ trigger:'#spoiler', start:'top 82%', once:true }});
-  gsap.fromTo(['#godparents .hon-icon','#bridesmaids .hon-icon'], {opacity:0, scale:.7}, {opacity:.85, scale:1, duration:.7, ease:'back.out(1.6)', immediateRender:false, scrollTrigger:{ trigger:'#bridesmaids', start:'top 84%', once:true }});
+  gsap.fromTo('#bridesmaids .hon-icon', {opacity:0, scale:.7}, {opacity:.85, scale:1, duration:.7, ease:'back.out(1.6)', immediateRender:false, scrollTrigger:{ trigger:'#bridesmaids', start:'top 84%', once:true }});
+  gsap.fromTo('#godparents .bm-stage', {opacity:0, y:28}, {opacity:1, y:0, duration:.8, ease, immediateRender:false, scrollTrigger:{ trigger:'#godparents', start:'top 82%', once:true }});
   gsap.fromTo('.alb-qr-frame', {opacity:0, scale:.84}, {opacity:1, scale:1, duration:.8, ease:'back.out(1.4)', immediateRender:false, scrollTrigger: { trigger: '#album', start: 'top 80%', once: true }});
   gsap.fromTo(['.alb-sub','.alb-scan','.alb-btn','.alb-hint'], {opacity:0, y:20}, {opacity:1, y:0, duration:.65, stagger:.12, ease, immediateRender:false, scrollTrigger: { trigger: '#album', start: 'top 80%', once: true }});
 
@@ -2654,6 +2724,41 @@ function initMenu(){
   btn.classList.add('is-ready');
 }
 
+/* ── BEST MAN · un nombre a la vez ─────────── */
+function initBestMan(){
+  var frame = document.getElementById('bmFrame');
+  var dotsW = document.getElementById('bmDots');
+  if(!frame || !dotsW) return;
+  var slides = frame.querySelectorAll('.bm-slide');
+  if(!slides.length) return;
+  var idx = 0, timer = null;
+
+  dotsW.innerHTML = '';
+  for(var i=0;i<slides.length;i++){
+    (function(k){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'bm-dot';
+      b.setAttribute('aria-label', 'Best man ' + (k+1));
+      b.addEventListener('click', function(){ go(k); restart(); });
+      dotsW.appendChild(b);
+    })(i);
+  }
+  var dots = dotsW.querySelectorAll('.bm-dot');
+
+  function go(n){
+    idx = (n + slides.length) % slides.length;
+    for(var k=0;k<slides.length;k++) slides[k].classList.toggle('is-active', k===idx);
+    for(var d=0;d<dots.length;d++) dots[d].classList.toggle('is-active', d===idx);
+  }
+  function restart(){ if(timer) clearInterval(timer); timer = setInterval(function(){ go(idx+1); }, 3000); }
+
+  go(0);
+  ScrollTrigger.create({
+    trigger:'#godparents', start:'top 82%', once:true,
+    onEnter:function(){ restart(); }
+  });
+}
+
 /* ── LISTAS DE HONOR · cascada + halo viajero ──── */
 function initHonorList(secId, listId){
   var list = document.getElementById(listId);
@@ -2680,7 +2785,7 @@ function initHonorList(secId, listId){
 
 function initHonorLists(){
   initHonorList('bridesmaids', 'dhList');
-  initHonorList('godparents',  'bestList');
+  initBestMan();
 }
 
 /* ── SOBRES DE REVELACION (final + spoiler) ───── */
