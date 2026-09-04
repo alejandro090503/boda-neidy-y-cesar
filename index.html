@@ -443,6 +443,7 @@ section>*{position:relative;z-index:1}
 .rev-card:hover{transform:translateY(-6px)}
 .rev-card:focus-visible{outline:2px solid var(--gold);outline-offset:10px;border-radius:8px}
 .rev-card svg.rev-base{width:100%;height:100%;display:block}
+.rev-card svg.rev-pocket{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:3;pointer-events:none}
 .rev-flap{
   position:absolute;top:22.6%;left:6.9%;width:86.2%;height:43%;
   transform-origin:top center;transform-style:preserve-3d;
@@ -457,7 +458,7 @@ section>*{position:relative;z-index:1}
 }
 .rev-card.open .rev-seal{opacity:0;transform:translate(-50%,-50%) scale(.65) rotate(-18deg)}
 .rev-letter{
-  position:absolute;left:8%;width:84%;bottom:12%;z-index:2;
+  position:absolute;left:7%;width:86%;bottom:16%;z-index:2;
   background:linear-gradient(180deg,#FBF6EC,#EFE6D5);
   border-radius:4px;padding:clamp(16px,4.6vw,22px) clamp(14px,4vw,20px);
   box-shadow:0 8px 26px rgba(0,0,0,.4);
@@ -465,7 +466,7 @@ section>*{position:relative;z-index:1}
   transition:transform .85s cubic-bezier(.2,.7,.2,1) .25s,opacity .4s ease .25s;
   pointer-events:none;
 }
-.rev-card.open .rev-letter{opacity:1;transform:translateY(-58%) scale(1)}
+.rev-card.open .rev-letter{opacity:1;transform:translateY(-62%) scale(1)}
 .rev-letter p{
   font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;
   font-size:clamp(14px,3.8vw,16.5px);line-height:1.6;color:#2A2418;text-align:center;
@@ -1938,9 +1939,12 @@ body.gift-locked{overflow:hidden}
         <p>Si conoces bien a la novia y al novio sabrás que habrá muchas sorpresas, no olvides llegar puntual e irte al último para no perderte de ningún item</p>
       </div>
       <svg class="rev-pocket" viewBox="0 0 260 190" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M4 184 L130 96 L256 184 Z" fill="#EFE4CF" stroke="rgba(138,122,98,.4)" stroke-width="1.2"/>
-        <path d="M4 15 L4 184 L60 130 Z" fill="#E9DDC7" opacity=".9"/>
-        <path d="M256 15 L256 184 L200 130 Z" fill="#E9DDC7" opacity=".9"/>
+        <defs>
+          <linearGradient id="revPocket1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F2E9D9"/><stop offset="100%" stop-color="#E2D5BC"/>
+          </linearGradient>
+        </defs>
+        <path d="M4 92 L130 152 L256 92 L256 184 L4 184 Z" fill="url(#revPocket1)" stroke="rgba(138,122,98,.5)" stroke-width="1.3" stroke-linejoin="round"/>
       </svg>
       <div class="rev-flap" aria-hidden="true">
         <svg viewBox="0 0 224 86" preserveAspectRatio="none" style="width:100%;height:100%;display:block">
@@ -1989,9 +1993,12 @@ body.gift-locked{overflow:hidden}
         <p>Entre los momentos especiales de la noche encontrarás el tradicional baile del billete y un detallito final preparado con mucho amor</p>
       </div>
       <svg class="rev-pocket" viewBox="0 0 260 190" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M4 184 L130 96 L256 184 Z" fill="#EFE4CF" stroke="rgba(138,122,98,.4)" stroke-width="1.2"/>
-        <path d="M4 15 L4 184 L60 130 Z" fill="#E9DDC7" opacity=".9"/>
-        <path d="M256 15 L256 184 L200 130 Z" fill="#E9DDC7" opacity=".9"/>
+        <defs>
+          <linearGradient id="revPocket2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F2E9D9"/><stop offset="100%" stop-color="#E2D5BC"/>
+          </linearGradient>
+        </defs>
+        <path d="M4 92 L130 152 L256 92 L256 184 L4 184 Z" fill="url(#revPocket2)" stroke="rgba(138,122,98,.5)" stroke-width="1.3" stroke-linejoin="round"/>
       </svg>
       <div class="rev-flap" aria-hidden="true">
         <svg viewBox="0 0 224 86" preserveAspectRatio="none" style="width:100%;height:100%;display:block">
