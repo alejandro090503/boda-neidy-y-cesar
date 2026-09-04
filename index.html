@@ -493,6 +493,42 @@ section>*{position:relative;z-index:1}
 .ct-btn svg{width:19px;height:19px}
 .ct-note{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(14px,3.8vw,16px);color:var(--cream);opacity:.65;text-align:center;margin-top:20px}
 
+/* ── MENU DE NAVEGACION (base: boda-roxana-y-pedro) ── */
+.nav-btn{position:fixed;top:16px;right:16px;z-index:1150;width:54px;height:54px;
+  border-radius:50%;border:1px solid rgba(212,197,178,.42);background:rgba(10,9,8,.82);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  box-shadow:0 6px 22px rgba(0,0,0,.55),0 0 0 1px rgba(212,197,178,.08);
+  opacity:0;pointer-events:none;-webkit-tap-highlight-color:transparent;
+  transition:opacity .5s ease,transform .3s ease}
+.nav-btn.is-ready{opacity:1;pointer-events:auto}
+.nav-btn:active{transform:scale(.92)}
+.nav-btn:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+.nav-btn i{display:block;width:22px;height:1.6px;background:var(--gold-lt);
+  transition:transform .35s ease,opacity .25s ease}
+.nav-btn.abierto i:nth-child(1){transform:translateY(6.6px) rotate(45deg)}
+.nav-btn.abierto i:nth-child(2){opacity:0}
+.nav-btn.abierto i:nth-child(3){transform:translateY(-6.6px) rotate(-45deg)}
+
+#nav-panel{position:fixed;inset:0;z-index:1140;
+  background:linear-gradient(180deg,rgba(8,7,5,.975),rgba(16,14,10,.975));
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .4s ease}
+#nav-panel.abierto{opacity:1;pointer-events:auto}
+#nav-panel::before{content:'';position:absolute;inset:14px;border:1px solid rgba(212,197,178,.14);pointer-events:none}
+.nav-lista{list-style:none;margin:0;padding:26px 22px;text-align:center;
+  max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;width:100%;max-width:440px}
+.nav-lista li{margin:0}
+.nav-lista a{display:block;padding:12px 10px;text-decoration:none;
+  font-family:'Cormorant Garamond',serif;font-size:clamp(18px,4.4vw,23px);font-weight:600;
+  color:var(--cream);line-height:1.25;transition:color .3s ease}
+.nav-lista a:active,.nav-lista a:focus-visible{color:var(--gold-lt)}
+.nav-lista li + li{border-top:1px solid rgba(212,197,178,.18)}
+.nav-rsvp{color:var(--gold)!important;letter-spacing:.02em;animation:navGlow 3s ease-in-out infinite}
+@keyframes navGlow{0%,100%{text-shadow:0 0 0 rgba(212,197,178,0)}50%{text-shadow:0 0 18px rgba(212,197,178,.55)}}
+@media(prefers-reduced-motion:reduce){.nav-btn,#nav-panel,.nav-rsvp{transition:none;animation:none}}
+
 /* ── SECTION DIVIDERS ──────────────────── */
 .sec-divider{
   width:100%;height:clamp(40px,10vw,60px);position:relative;overflow:hidden;
@@ -1262,6 +1298,31 @@ body.gift-locked{overflow:hidden}
 <button class="vinyl-btn" id="musicBtn" onclick="toggleMusic()" aria-label="Reproducir música">
   <span class="vinyl" id="vinylDisc"><span class="vinyl-label"><span class="vinyl-hole"></span></span></span>
 </button>
+
+<!-- MENU DE NAVEGACION -->
+<button class="nav-btn" id="navBtn" type="button" aria-label="Abrir el menú" aria-expanded="false" aria-controls="nav-panel">
+  <i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i>
+</button>
+<nav id="nav-panel" aria-label="Secciones de la invitación">
+  <ul class="nav-lista">
+    <li><a href="#invite">Nuestra invitación</a></li>
+    <li><a href="#location">Ceremonia y recepción</a></li>
+    <li><a href="#weather">El clima</a></li>
+    <li><a href="#itinerary">Itinerario</a></li>
+    <li><a href="#family">Nuestras familias</a></li>
+    <li><a href="#bridesmaids">Damas de honor</a></li>
+    <li><a href="#godparents">Best Man</a></li>
+    <li><a href="#dresscode">Código de vestimenta</a></li>
+    <li><a href="#gifts">Mesa de regalos</a></li>
+    <li><a href="#gallery">Galería</a></li>
+    <li><a href="#lodging">Hospedaje</a></li>
+    <li><a href="#album">Álbum compartido</a></li>
+    <li><a href="#songs">Sugerencia de canciones</a></li>
+    <li><a href="#wishes">Buenos deseos</a></li>
+    <li><a href="#contact">Contáctanos</a></li>
+    <li><a href="#rsvp" class="nav-rsvp">Confirmar asistencia</a></li>
+  </ul>
+</nav>
 
 <div id="toast"></div>
 
@@ -2040,6 +2101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     spawnParticles();
     initBgOrbs();
     scrollAnims();
+    initMenu();
     initEditorialReveal();
     initHonorLists();
     initRevealCards();
@@ -2513,6 +2575,45 @@ function initTrays(){
     enviar('¡Hola César y Neidy! De parte de ' + nombre.value.trim() + ': ' + msg.value.trim());
   });
 
+}
+
+/* ── MENU DE NAVEGACION ───────────────────
+   La invitacion es larga y hay invitados mayores: el menu deja llegar a
+   cualquier seccion sin recorrerla entera. Aparece al abrir el sobre. */
+function initMenu(){
+  var btn = document.getElementById('navBtn');
+  var panel = document.getElementById('nav-panel');
+  if(!btn || !panel) return;
+
+  function abrir(v){
+    panel.classList.toggle('abierto', v);
+    btn.classList.toggle('abierto', v);
+    btn.setAttribute('aria-expanded', v ? 'true' : 'false');
+    btn.setAttribute('aria-label', v ? 'Cerrar el men\u00fa' : 'Abrir el men\u00fa');
+    document.body.style.overflow = v ? 'hidden' : '';
+  }
+
+  btn.addEventListener('click', function(){ abrir(!panel.classList.contains('abierto')); });
+
+  panel.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var dest = document.querySelector(a.getAttribute('href'));
+      abrir(false);
+      if(dest){
+        e.preventDefault();
+        /* se espera a que el panel cierre para que el scroll no salte */
+        setTimeout(function(){
+          window.scrollTo({top: dest.getBoundingClientRect().top + window.scrollY - 10, behavior:'smooth'});
+        }, 260);
+      }
+    });
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && panel.classList.contains('abierto')) abrir(false);
+  });
+
+  btn.classList.add('is-ready');
 }
 
 /* ── LISTAS DE HONOR · cascada + halo viajero ──── */
