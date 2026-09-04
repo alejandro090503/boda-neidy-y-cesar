@@ -1089,242 +1089,6 @@ section>*{position:relative;z-index:1}
 .gf-bk-clabe a,.gf-bk-clabe span[style]{color:inherit!important;text-decoration:none!important;pointer-events:none!important}
 .gf-copy{margin-top:14px;width:100%;font-size:clamp(10px,2.6vw,12px);padding:clamp(12px,3vw,15px) 16px}
 
-/* ── SOBRE INTERACTIVO ── */
-/* ── ITINERARIO · CAMINO EN S ──────────────── */
-function buildTimelinePath() {
-  const wrap = document.getElementById('tlWrap');
-  const svg  = document.getElementById('tlSvg');
-  const path = document.getElementById('tlPath');
-  const bg   = document.getElementById('tlPathBg');
-  const glow = document.getElementById('tlPathGlow');
-  const halo = document.getElementById('tlPathHalo');
-  if (!wrap || !svg || !path) return;
-  const rows = [...wrap.querySelectorAll('.tl-row')];
-  if (!rows.length) return;
-
-  function build() {
-    const rect = wrap.getBoundingClientRect();
-    const W = rect.width;
-    const H = wrap.offsetHeight;
-    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-    svg.setAttribute('width',  W);
-    svg.setAttribute('height', H);
-
-    const points = rows.map(row => {
-      const rRect = row.getBoundingClientRect();
-      const y = (rRect.top - rect.top) + rRect.height / 2;
-      const x = row.dataset.side === 'left' ? 29 : W - 29;
-      return { x, y };
-    });
-
-    let d = 'M ' + points[0].x + ' ' + points[0].y;
-    for (let i = 1; i < points.length; i++) {
-      const p0 = points[i-1], p1 = points[i];
-      const midY = (p0.y + p1.y) / 2;
-      d += ' C ' + p0.x + ' ' + midY + ', ' + p1.x + ' ' + midY + ', ' + p1.x + ' ' + p1.y;
-    }
-    path.setAttribute('d', d);
-    if (bg)   bg.setAttribute('d', d);
-    if (glow) glow.setAttribute('d', d);
-    if (halo) halo.setAttribute('d', d);
-
-    const len = path.getTotalLength();
-    path.style.strokeDasharray  = len;
-    path.style.strokeDashoffset = len;
-    window.__tlData = { path, len, rows };
-    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-  }
-
-  build();
-  let rzT;
-  window.addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(build, 140); }, { passive: true });
-  window.addEventListener('load', build);
-}
-
-/* ── REVEAL de las secciones editoriales (.rvc) ───── */
-function initEditorialReveal() {
-  document.querySelectorAll('#invite .rvc').forEach(function(el, i){
-    gsap.fromTo(el, {opacity:0, y:24},
-      {opacity:1, y:0, duration:.85, delay:i*.12, ease:'power3.out', immediateRender:false,
-       scrollTrigger:{trigger:'#invite', start:'top 82%', once:true}});
-  });
-  gsap.fromTo('#family .fam-card', {opacity:0, y:30},
-    {opacity:1, y:0, duration:.9, ease:'power3.out', immediateRender:false,
-     scrollTrigger:{trigger:'#family', start:'top 80%', once:true}});
-}
-
-/* ── CARRUSEL DE HOSPEDAJE ──────────────── */
-function initLodging(){
-  var track = document.getElementById('hospTrack');
-  var dotsW = document.getElementById('hospDots');
-  if(!track || !dotsW) return;
-  var slides = track.children.length, idx = 0;
-  dotsW.innerHTML = '';
-  for(var i=0;i<slides;i++){
-    (function(k){
-      var b=document.createElement('button');
-      b.type='button'; b.setAttribute('aria-label','Hotel '+(k+1));
-      b.addEventListener('click',function(){go(k);});
-      dotsW.appendChild(b);
-    })(i);
-  }
-  var dots = dotsW.querySelectorAll('button');
-  function go(i){
-    idx = (i + slides) % slides;
-    track.style.transform = 'translateX(' + (-idx*100) + '%)';
-    for(var k=0;k<dots.length;k++) dots[k].classList.toggle('active', k===idx);
-  }
-  var prev=document.querySelector('#lodging .hosp-arrow.prev');
-  var next=document.querySelector('#lodging .hosp-arrow.next');
-  if(prev) prev.addEventListener('click',function(){go(idx-1);});
-  if(next) next.addEventListener('click',function(){go(idx+1);});
-  var sx=0, sy=0;
-  track.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
-  track.addEventListener('touchend',function(e){
-    var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
-    if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)) go(dx<0?idx+1:idx-1);
-  },{passive:true});
-  go(0);
-}
-
-/* ── CLIMA · gauge de probabilidad de lluvia ───── */
-var WX_RAIN = 0.10;   /* 10% — mismo valor que el texto de .wx-pct */
-function initWeather(){
-  var arc = document.getElementById('wxArc');
-  if(!arc) return;
-  var circ = 2 * Math.PI * 45;
-  arc.style.strokeDasharray = circ;
-  arc.style.strokeDashoffset = circ;
-  ScrollTrigger.create({
-    trigger:'#weather', start:'top 78%', once:true,
-    onEnter:function(){ arc.style.strokeDashoffset = circ * (1 - WX_RAIN); }
-  });
-}
-
-/* ── BANDEJAS → WhatsApp (canción / buenos deseos) ──
-   WA_NOVIOS: en cuanto el cliente comparta su número, ponlo aquí en
-   formato internacional sin signos (ej. '5215512345678'). Mientras
-   esté vacío el botón copia el mensaje al portapapeles. */
-var WA_NOVIOS = '';
-
-function initTrays(){
-  function contador(campo, salida){
-    var c = document.getElementById(campo), o = document.getElementById(salida);
-    if(!c || !o) return;
-    c.addEventListener('input', function(){ o.textContent = c.value.length; });
-  }
-  contador('songInput','songCount');
-  contador('wishText','wishCount');
-
-  function marcarVacio(campo){
-    campo.focus();
-    campo.style.borderColor = 'var(--gold)';
-    setTimeout(function(){ campo.style.borderColor = ''; }, 1400);
-  }
-
-  function enviar(texto){
-    if(WA_NOVIOS){
-      window.open('https://wa.me/' + WA_NOVIOS + '?text=' + encodeURIComponent(texto), '_blank');
-      return;
-    }
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(texto).then(function(){ toast('¡Mensaje copiado! Compártelo con los novios'); })
-        .catch(function(){ toast('¡Gracias! Compártelo con los novios'); });
-    } else { toast('¡Gracias! Compártelo con los novios'); }
-  }
-
-  var songBtn = document.getElementById('songSend');
-  if(songBtn) songBtn.addEventListener('click', function(){
-    var campo = document.getElementById('songInput');
-    if(!campo.value.trim()){ marcarVacio(campo); return; }
-    enviar('¡Hola César y Neidy! Mi sugerencia para la playlist de su boda: ' + campo.value.trim());
-  });
-
-  var wishBtn = document.getElementById('wishSend');
-  if(wishBtn) wishBtn.addEventListener('click', function(){
-    var nombre = document.getElementById('wishName');
-    var msg    = document.getElementById('wishText');
-    if(!msg.value.trim()){ marcarVacio(msg); return; }
-    if(!nombre.value.trim()){ marcarVacio(nombre); return; }
-    enviar('¡Hola César y Neidy! De parte de ' + nombre.value.trim() + ': ' + msg.value.trim());
-  });
-
-  if(!WA_NOVIOS){
-    var h = document.getElementById('songHint');
-    if(h) h.textContent = 'Tu sugerencia se copiará para que se la envíes a los novios';
-  }
-}
-
-/* ── PADRINOS · carrusel de una tarjeta ──────── */
-function initPadrinos(){
-  var frame = document.getElementById('padFrame');
-  var dotsW = document.getElementById('padDots');
-  if(!frame || !dotsW) return;
-  var slides = frame.querySelectorAll('.pad-slide');
-  if(slides.length < 2){ if(dotsW) dotsW.style.display='none'; return; }
-  var idx = 0, timer = null;
-
-  dotsW.innerHTML = '';
-  for(var i=0;i<slides.length;i++){
-    (function(k){
-      var b = document.createElement('button');
-      b.type='button'; b.className='pad-dot';
-      b.setAttribute('aria-label','Padrinos '+(k+1));
-      b.addEventListener('click', function(){ go(k); restart(); });
-      dotsW.appendChild(b);
-    })(i);
-  }
-  var dots = dotsW.querySelectorAll('.pad-dot');
-
-  function go(n){
-    idx = (n + slides.length) % slides.length;
-    for(var k=0;k<slides.length;k++) slides[k].classList.toggle('is-active', k===idx);
-    for(var d=0;d<dots.length;d++) dots[d].classList.toggle('is-active', d===idx);
-  }
-  function restart(){ if(timer) clearInterval(timer); timer = setInterval(function(){ go(idx+1); }, 4200); }
-
-  go(0);
-  ScrollTrigger.create({
-    trigger:'#godparents', start:'top 82%', once:true,
-    onEnter:function(){ restart(); }
-  });
-}
-
-/* ── DAMAS DE HONOR · cascada + halo viajero ──── */
-function initBridesmaids(){
-  var list = document.getElementById('dhList');
-  if(!list) return;
-  var items = list.querySelectorAll('.dh-item');
-  if(!items.length) return;
-  var i = 0, timer = null;
-
-  function lit(){
-    for(var k=0;k<items.length;k++) items[k].classList.toggle('is-lit', k===i);
-    i = (i + 1) % items.length;
-  }
-
-  ScrollTrigger.create({
-    trigger:'#bridesmaids', start:'top 84%', once:true,
-    onEnter:function(){
-      items.forEach(function(el, n){
-        setTimeout(function(){ el.classList.add('is-in'); }, n * 170);
-      });
-      setTimeout(function(){ lit(); timer = setInterval(lit, 1500); }, items.length * 170 + 400);
-    }
-  });
-}
-
-/* ── SOBRES DE REVELACION (final + spoiler) ───── */
-function initRevealCards(){
-  document.querySelectorAll('.rev-card').forEach(function(card){
-    card.addEventListener('click', function(){
-      var open = card.classList.toggle('open');
-      card.setAttribute('aria-expanded', open ? 'true' : 'false');
-      if(typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-    });
-  });
-}
-
 /* ── CAJA DE REGALO + CONFETTI ── */
 .giftbox-stage{position:relative;margin:clamp(28px,7vw,40px) auto 0;max-width:560px;min-height:290px;display:flex;align-items:center;justify-content:center}
 .giftbox-stage>div{opacity:1;text-align:center}
@@ -2620,6 +2384,241 @@ function toggleMusic() {
   if (playing) { aud.pause(); setVinyl(false); }
   else { aud.play().catch(()=>{}); setVinyl(true); }
   playing = !playing;
+}
+
+/* ── ITINERARIO · CAMINO EN S ──────────────── */
+function buildTimelinePath() {
+  const wrap = document.getElementById('tlWrap');
+  const svg  = document.getElementById('tlSvg');
+  const path = document.getElementById('tlPath');
+  const bg   = document.getElementById('tlPathBg');
+  const glow = document.getElementById('tlPathGlow');
+  const halo = document.getElementById('tlPathHalo');
+  if (!wrap || !svg || !path) return;
+  const rows = [...wrap.querySelectorAll('.tl-row')];
+  if (!rows.length) return;
+
+  function build() {
+    const rect = wrap.getBoundingClientRect();
+    const W = rect.width;
+    const H = wrap.offsetHeight;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('width',  W);
+    svg.setAttribute('height', H);
+
+    const points = rows.map(row => {
+      const rRect = row.getBoundingClientRect();
+      const y = (rRect.top - rect.top) + rRect.height / 2;
+      const x = row.dataset.side === 'left' ? 29 : W - 29;
+      return { x, y };
+    });
+
+    let d = 'M ' + points[0].x + ' ' + points[0].y;
+    for (let i = 1; i < points.length; i++) {
+      const p0 = points[i-1], p1 = points[i];
+      const midY = (p0.y + p1.y) / 2;
+      d += ' C ' + p0.x + ' ' + midY + ', ' + p1.x + ' ' + midY + ', ' + p1.x + ' ' + p1.y;
+    }
+    path.setAttribute('d', d);
+    if (bg)   bg.setAttribute('d', d);
+    if (glow) glow.setAttribute('d', d);
+    if (halo) halo.setAttribute('d', d);
+
+    const len = path.getTotalLength();
+    path.style.strokeDasharray  = len;
+    path.style.strokeDashoffset = len;
+    window.__tlData = { path, len, rows };
+    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+  }
+
+  build();
+  let rzT;
+  window.addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(build, 140); }, { passive: true });
+  window.addEventListener('load', build);
+}
+
+/* ── REVEAL de las secciones editoriales (.rvc) ───── */
+function initEditorialReveal() {
+  document.querySelectorAll('#invite .rvc').forEach(function(el, i){
+    gsap.fromTo(el, {opacity:0, y:24},
+      {opacity:1, y:0, duration:.85, delay:i*.12, ease:'power3.out', immediateRender:false,
+       scrollTrigger:{trigger:'#invite', start:'top 82%', once:true}});
+  });
+  gsap.fromTo('#family .fam-card', {opacity:0, y:30},
+    {opacity:1, y:0, duration:.9, ease:'power3.out', immediateRender:false,
+     scrollTrigger:{trigger:'#family', start:'top 80%', once:true}});
+}
+
+/* ── CARRUSEL DE HOSPEDAJE ──────────────── */
+function initLodging(){
+  var track = document.getElementById('hospTrack');
+  var dotsW = document.getElementById('hospDots');
+  if(!track || !dotsW) return;
+  var slides = track.children.length, idx = 0;
+  dotsW.innerHTML = '';
+  for(var i=0;i<slides;i++){
+    (function(k){
+      var b=document.createElement('button');
+      b.type='button'; b.setAttribute('aria-label','Hotel '+(k+1));
+      b.addEventListener('click',function(){go(k);});
+      dotsW.appendChild(b);
+    })(i);
+  }
+  var dots = dotsW.querySelectorAll('button');
+  function go(i){
+    idx = (i + slides) % slides;
+    track.style.transform = 'translateX(' + (-idx*100) + '%)';
+    for(var k=0;k<dots.length;k++) dots[k].classList.toggle('active', k===idx);
+  }
+  var prev=document.querySelector('#lodging .hosp-arrow.prev');
+  var next=document.querySelector('#lodging .hosp-arrow.next');
+  if(prev) prev.addEventListener('click',function(){go(idx-1);});
+  if(next) next.addEventListener('click',function(){go(idx+1);});
+  var sx=0, sy=0;
+  track.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  track.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)) go(dx<0?idx+1:idx-1);
+  },{passive:true});
+  go(0);
+}
+
+/* ── CLIMA · gauge de probabilidad de lluvia ───── */
+var WX_RAIN = 0.10;   /* 10% — mismo valor que el texto de .wx-pct */
+function initWeather(){
+  var arc = document.getElementById('wxArc');
+  if(!arc) return;
+  var circ = 2 * Math.PI * 45;
+  arc.style.strokeDasharray = circ;
+  arc.style.strokeDashoffset = circ;
+  ScrollTrigger.create({
+    trigger:'#weather', start:'top 78%', once:true,
+    onEnter:function(){ arc.style.strokeDashoffset = circ * (1 - WX_RAIN); }
+  });
+}
+
+/* ── BANDEJAS → WhatsApp (canción / buenos deseos) ──
+   WA_NOVIOS: en cuanto el cliente comparta su número, ponlo aquí en
+   formato internacional sin signos (ej. '5215512345678'). Mientras
+   esté vacío el botón copia el mensaje al portapapeles. */
+var WA_NOVIOS = '';
+
+function initTrays(){
+  function contador(campo, salida){
+    var c = document.getElementById(campo), o = document.getElementById(salida);
+    if(!c || !o) return;
+    c.addEventListener('input', function(){ o.textContent = c.value.length; });
+  }
+  contador('songInput','songCount');
+  contador('wishText','wishCount');
+
+  function marcarVacio(campo){
+    campo.focus();
+    campo.style.borderColor = 'var(--gold)';
+    setTimeout(function(){ campo.style.borderColor = ''; }, 1400);
+  }
+
+  function enviar(texto){
+    if(WA_NOVIOS){
+      window.open('https://wa.me/' + WA_NOVIOS + '?text=' + encodeURIComponent(texto), '_blank');
+      return;
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(texto).then(function(){ toast('¡Mensaje copiado! Compártelo con los novios'); })
+        .catch(function(){ toast('¡Gracias! Compártelo con los novios'); });
+    } else { toast('¡Gracias! Compártelo con los novios'); }
+  }
+
+  var songBtn = document.getElementById('songSend');
+  if(songBtn) songBtn.addEventListener('click', function(){
+    var campo = document.getElementById('songInput');
+    if(!campo.value.trim()){ marcarVacio(campo); return; }
+    enviar('¡Hola César y Neidy! Mi sugerencia para la playlist de su boda: ' + campo.value.trim());
+  });
+
+  var wishBtn = document.getElementById('wishSend');
+  if(wishBtn) wishBtn.addEventListener('click', function(){
+    var nombre = document.getElementById('wishName');
+    var msg    = document.getElementById('wishText');
+    if(!msg.value.trim()){ marcarVacio(msg); return; }
+    if(!nombre.value.trim()){ marcarVacio(nombre); return; }
+    enviar('¡Hola César y Neidy! De parte de ' + nombre.value.trim() + ': ' + msg.value.trim());
+  });
+
+  if(!WA_NOVIOS){
+    var h = document.getElementById('songHint');
+    if(h) h.textContent = 'Tu sugerencia se copiará para que se la envíes a los novios';
+  }
+}
+
+/* ── PADRINOS · carrusel de una tarjeta ──────── */
+function initPadrinos(){
+  var frame = document.getElementById('padFrame');
+  var dotsW = document.getElementById('padDots');
+  if(!frame || !dotsW) return;
+  var slides = frame.querySelectorAll('.pad-slide');
+  if(slides.length < 2){ if(dotsW) dotsW.style.display='none'; return; }
+  var idx = 0, timer = null;
+
+  dotsW.innerHTML = '';
+  for(var i=0;i<slides.length;i++){
+    (function(k){
+      var b = document.createElement('button');
+      b.type='button'; b.className='pad-dot';
+      b.setAttribute('aria-label','Padrinos '+(k+1));
+      b.addEventListener('click', function(){ go(k); restart(); });
+      dotsW.appendChild(b);
+    })(i);
+  }
+  var dots = dotsW.querySelectorAll('.pad-dot');
+
+  function go(n){
+    idx = (n + slides.length) % slides.length;
+    for(var k=0;k<slides.length;k++) slides[k].classList.toggle('is-active', k===idx);
+    for(var d=0;d<dots.length;d++) dots[d].classList.toggle('is-active', d===idx);
+  }
+  function restart(){ if(timer) clearInterval(timer); timer = setInterval(function(){ go(idx+1); }, 4200); }
+
+  go(0);
+  ScrollTrigger.create({
+    trigger:'#godparents', start:'top 82%', once:true,
+    onEnter:function(){ restart(); }
+  });
+}
+
+/* ── DAMAS DE HONOR · cascada + halo viajero ──── */
+function initBridesmaids(){
+  var list = document.getElementById('dhList');
+  if(!list) return;
+  var items = list.querySelectorAll('.dh-item');
+  if(!items.length) return;
+  var i = 0, timer = null;
+
+  function lit(){
+    for(var k=0;k<items.length;k++) items[k].classList.toggle('is-lit', k===i);
+    i = (i + 1) % items.length;
+  }
+
+  ScrollTrigger.create({
+    trigger:'#bridesmaids', start:'top 84%', once:true,
+    onEnter:function(){
+      items.forEach(function(el, n){
+        setTimeout(function(){ el.classList.add('is-in'); }, n * 170);
+      });
+      setTimeout(function(){ lit(); timer = setInterval(lit, 1500); }, items.length * 170 + 400);
+    }
+  });
+}
+
+/* ── SOBRES DE REVELACION (final + spoiler) ───── */
+function initRevealCards(){
+  document.querySelectorAll('.rev-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      var open = card.classList.toggle('open');
+      card.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if(typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+    });
+  });
 }
 
 /* ── CAJA DE REGALO + CONFETTI + MODAL ─────── */
