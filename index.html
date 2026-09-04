@@ -1142,8 +1142,25 @@ body.gift-locked{overflow:hidden}
 .gift-close:hover{background:var(--gold);color:var(--ink);transform:rotate(90deg)}
 .gift-close:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .gift-close svg{width:16px;height:16px}
+.gr-viewport{overflow:hidden;position:relative;margin:0 -6px}
+.gr-track{display:flex;align-items:stretch;transition:transform .5s cubic-bezier(.2,.7,.2,1);touch-action:pan-y}
+.gr-slide{flex:0 0 100%;box-sizing:border-box;padding:0 6px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center}
+.gr-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:22px}
+.gr-arrow{width:36px;height:36px;border-radius:50%;border:1px solid rgba(212,197,178,.45);
+  background:transparent;color:var(--gold);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;padding:0;transition:background .3s,color .3s,transform .3s}
+.gr-arrow:active{background:var(--gold);color:var(--ink);transform:scale(.92)}
+.gr-arrow:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.gr-arrow svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.gr-dots{display:flex;gap:9px}
+.gr-dot{width:8px;height:8px;border-radius:50%;border:1px solid rgba(212,197,178,.6);
+  background:transparent;padding:0;cursor:pointer;transition:background .3s,transform .3s}
+.gr-dot.is-active{background:var(--gold);transform:scale(1.35)}
+.gr-dot:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.gr-hint{font-family:'Raleway',sans-serif;font-size:clamp(10px,2.6vw,11.5px);font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--cream);opacity:.5;margin-top:14px}
 .gr-logo{height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:20px}
-.gr-logo img{max-height:52px;max-width:210px;width:auto;height:auto;display:block}
+.gr-logo img{max-height:48px;max-width:190px;width:auto;height:auto;display:block}
 .gr-title{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,6vw,26px);color:var(--cream);margin-bottom:10px}
 .gr-desc{font-family:'Raleway',sans-serif;font-size:clamp(14px,3.8vw,16px);line-height:1.65;color:var(--cream);opacity:.8;font-weight:400;margin-bottom:24px}
 .gr-desc b{font-weight:600;color:var(--gold);opacity:1}
@@ -1569,11 +1586,32 @@ body.gift-locked{overflow:hidden}
     <button class="gift-close" id="gift-close" type="button" aria-label="Cerrar">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
-    <div class="gift-reveal-eyebrow">Nuestra mesa de regalos</div>
-    <div class="gr-logo"><img src="liverpool-logo.png" alt="Liverpool" width="508" height="121" decoding="async"></div>
-    <div class="gr-title">Lista de regalos</div>
-    <div class="gr-desc">Número de evento <b>51853920</b><br>Envío directo a los novios</div>
-    <a class="gr-btn" href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51853920" target="_blank" rel="noopener">Ver mesa</a>
+    <div class="gift-reveal-eyebrow">Elige una opción</div>
+    <div class="gr-viewport" id="grViewport">
+      <div class="gr-track" id="grTrack">
+
+        <div class="gr-slide">
+          <div class="gr-logo"><img src="liverpool-logo.png" alt="Liverpool" width="508" height="121" decoding="async"></div>
+          <div class="gr-title">Lista de regalos</div>
+          <div class="gr-desc">Número de evento <b>51853920</b><br>Envío directo a los novios</div>
+          <a class="gr-btn" href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51853920" target="_blank" rel="noopener">Ver mesa</a>
+        </div>
+
+        <div class="gr-slide">
+          <div class="gr-logo"><img src="amazon-logo.png" alt="Amazon" width="600" height="181" decoding="async"></div>
+          <div class="gr-title">Mesa de regalos</div>
+          <div class="gr-desc">César Gómez Hernández<br>y Neidy Ivonne Cuéllar Sánchez</div>
+          <a class="gr-btn" href="https://www.amazon.com.mx/wedding/share/cesaryneidy" target="_blank" rel="noopener">Ver mesa</a>
+        </div>
+
+      </div>
+    </div>
+    <div class="gr-nav">
+      <button class="gr-arrow" id="grPrev" type="button" aria-label="Opción anterior"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="gr-dots" id="grDots"></div>
+      <button class="gr-arrow" id="grNext" type="button" aria-label="Siguiente opción"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+    <div class="gr-hint">Desliza para ver las opciones</div>
   </div>
 </div>
 
@@ -2719,6 +2757,53 @@ function initGiftBox(){
     requestAnimationFrame(frame);
   }
 
+  /* carrusel de opciones dentro del modal */
+  var track  = document.getElementById('grTrack');
+  var dotsW  = document.getElementById('grDots');
+  var slides = track ? track.children.length : 0;
+  var gIdx   = 0;
+  if(track && dotsW && slides > 1){
+    dotsW.innerHTML = '';
+    for(var gi=0; gi<slides; gi++){
+      (function(k){
+        var d = document.createElement('button');
+        d.type = 'button'; d.className = 'gr-dot';
+        d.setAttribute('aria-label', 'Opci\u00f3n ' + (k+1));
+        d.addEventListener('click', function(){ goTo(k); });
+        dotsW.appendChild(d);
+      })(gi);
+    }
+    var gDots = dotsW.querySelectorAll('.gr-dot');
+
+    function goTo(n){
+      gIdx = (n + slides) % slides;
+      track.style.transform = 'translateX(' + (-gIdx*100) + '%)';
+      for(var k=0;k<gDots.length;k++) gDots[k].classList.toggle('is-active', k===gIdx);
+      /* lo que no se ve no debe recibir foco */
+      for(var m=0;m<slides;m++){
+        var f = track.children[m].querySelectorAll('a,button');
+        for(var q=0;q<f.length;q++){
+          if(m===gIdx) f[q].removeAttribute('tabindex');
+          else f[q].setAttribute('tabindex','-1');
+        }
+      }
+    }
+
+    var gp = document.getElementById('grPrev'), gn = document.getElementById('grNext');
+    if(gp) gp.addEventListener('click', function(){ goTo(gIdx-1); });
+    if(gn) gn.addEventListener('click', function(){ goTo(gIdx+1); });
+
+    var gsx=0, gsy=0;
+    track.addEventListener('touchstart', function(e){ gsx=e.touches[0].clientX; gsy=e.touches[0].clientY; }, {passive:true});
+    track.addEventListener('touchend', function(e){
+      var dx=e.changedTouches[0].clientX-gsx, dy=e.changedTouches[0].clientY-gsy;
+      if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)) goTo(dx<0 ? gIdx+1 : gIdx-1);
+    }, {passive:true});
+
+    goTo(0);
+    window.__grReset = function(){ goTo(0); };
+  }
+
   var isOpen = false, viaTeclado = false, savedScrollY = 0;
 
   /* la seccion recorta el position:fixed → el modal se mueve al body */
@@ -2763,6 +2848,7 @@ function initGiftBox(){
       box.classList.remove('is-open');
       box.setAttribute('aria-expanded','false');
       if(cta) cta.classList.remove('is-hidden');
+      if(window.__grReset) window.__grReset();
     }, 420);
     if(viaTeclado) box.focus();
     viaTeclado = false;
