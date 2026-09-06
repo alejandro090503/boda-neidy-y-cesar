@@ -694,7 +694,7 @@ section>*{position:relative;z-index:1}
 /* Grid 2x2 — tamaños sucesivos: Días > Horas > Minutos > Segundos */
 .cd-ring-grid{
   display:grid;grid-template-columns:1fr 1fr;
-  gap:28px 18px;
+  gap:26px 10px;
   margin-top:52px;position:relative;z-index:1;
   padding:0 4px;
   align-items:center;
@@ -709,8 +709,8 @@ section>*{position:relative;z-index:1}
 .cd-ring-item:active{transform:scale(.96)}
 .cd-ring-grid > :nth-child(1){width:100%}
 .cd-ring-grid > :nth-child(2){width:82%}
-.cd-ring-grid > :nth-child(3){width:68%}
-.cd-ring-grid > :nth-child(4){width:56%}
+.cd-ring-grid > :nth-child(3){width:74%}
+.cd-ring-grid > :nth-child(4){width:64%}
 
 /* Anillo exterior punteado — gira lento */
 .cd-ring-item::after{
@@ -790,10 +790,10 @@ section>*{position:relative;z-index:1}
   letter-spacing:3px;text-transform:uppercase;
   color:var(--cd-olive);opacity:1;font-weight:600;
 }
-.cd-ring-grid > :nth-child(1) .cd-ring-lbl{font-size:14px;margin-top:16px;color:var(--cd-terra)}
-.cd-ring-grid > :nth-child(2) .cd-ring-lbl{font-size:13px;margin-top:13px;letter-spacing:3px;color:var(--cd-gold)}
-.cd-ring-grid > :nth-child(3) .cd-ring-lbl{font-size:12px;margin-top:10px;letter-spacing:2.5px;color:var(--cd-accent)}
-.cd-ring-grid > :nth-child(4) .cd-ring-lbl{font-size:11px;margin-top:8px;letter-spacing:2.5px;color:var(--cd-gold)}
+.cd-ring-grid > :nth-child(1) .cd-ring-lbl{font-size:13px;margin-top:14px;letter-spacing:2.4px;color:var(--cd-terra)}
+.cd-ring-grid > :nth-child(2) .cd-ring-lbl{font-size:11.5px;margin-top:12px;letter-spacing:2px;color:var(--cd-gold)}
+.cd-ring-grid > :nth-child(3) .cd-ring-lbl{font-size:10.5px;margin-top:10px;letter-spacing:1.6px;color:var(--cd-accent)}
+.cd-ring-grid > :nth-child(4) .cd-ring-lbl{font-size:9.5px;margin-top:8px;letter-spacing:1.4px;color:var(--cd-gold)}
 /* Colores por celda */
 .cd-ring-grid > :nth-child(2) .cd-dot{background:var(--cd-gold)}
 .cd-ring-grid > :nth-child(3) .cd-dot{background:var(--cd-accent)}
