@@ -18,6 +18,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cinzel:wght@400;500;600;700&family=Great+Vibes&family=Jost:wght@300;400;500;600&family=Parisienne&display=swap" rel="stylesheet">
   <style>
 :root {
+  --lamina: linear-gradient(135deg,#6E5320 0%,#A87F2C 9%,#E6C87A 19%,#FBF0CE 27%,#DDB85E 36%,#9A742A 46%,#6E5320 54%,#B08A32 63%,#F3E3B4 72%,#D4AC55 81%,#8E6B26 91%,#6E5320 100%);
+  --lamina-ink: #2E2007;
   --gold:      #D4C5B2;
   --gold-lt:   #E9E0D4;
   --gold-dim:  rgba(212,197,178,.15);
@@ -210,13 +212,14 @@ section>*{position:relative;z-index:1}
 .btn:active::before{opacity:1}
 .btn+.btn{margin-top:12px}
 .btn-gold{
-  background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--ink);font-weight:700;
+  background:var(--lamina);background-size:220% 220%;color:var(--lamina-ink);font-weight:700;
+  animation:laminaSweep 7s ease-in-out infinite;
   border:none;
   box-shadow:0 4px 22px rgba(212,197,178,.45),0 1px 3px rgba(0,0,0,.3),0 0 20px rgba(212,197,178,.2);
   transition:all .3s var(--spring);
   text-shadow:none;
 }
-.btn-gold svg{stroke:var(--ink)}
+.btn-gold svg{stroke:var(--lamina-ink)}
 .btn-gold:active{background:linear-gradient(135deg,var(--gold-lt),var(--gold));transform:scale(.96)}
 
 
@@ -452,9 +455,10 @@ section>*{position:relative;z-index:1}
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   min-height:226px;
   position:relative;
-  background:linear-gradient(160deg,#7d2e1e 0%,#5a1f12 100%);
+  background:var(--lamina);
+  background-size:220% 220%;
   padding:32px 24px;text-align:center;
-  box-shadow:0 12px 30px rgba(0,0,0,.5);
+  box-shadow:0 12px 30px rgba(0,0,0,.55),0 0 0 1px rgba(255,240,200,.18);
   opacity:.4;transform:scale(.88);
   transition:opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1),box-shadow .55s ease;
   --pr:18px;
@@ -471,16 +475,25 @@ section>*{position:relative;z-index:1}
     radial-gradient(var(--pr) at 100% 100%,#0000 98%,#000) 100% 100%;
   mask-size:51% 51%;mask-repeat:no-repeat;
 }
-.pad-card.active{opacity:1;transform:scale(1);box-shadow:0 22px 54px rgba(0,0,0,.62)}
+.pad-card.active{opacity:1;transform:scale(1);box-shadow:0 22px 54px rgba(0,0,0,.7),0 0 34px rgba(228,196,120,.28),0 0 0 1px rgba(255,240,200,.3)}
+/* barrido de luz sobre la lamina, solo en la tarjeta al frente */
+.pad-card.active{animation:laminaSweep 7s ease-in-out infinite}
+@keyframes laminaSweep{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 /* marco interior crema fino (placa) */
 .pad-card::before{
   content:'';position:absolute;inset:11px;
-  border:1px solid rgba(243,232,208,.34);border-radius:8px;
+  border:1px solid rgba(60,42,12,.38);border-radius:8px;
   pointer-events:none;
 }
-.pad-ic{width:54px;height:54px;display:block;margin:0 auto 10px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))}
-.pad-role{font-family:'Great Vibes',cursive;font-size:34px;line-height:1;color:#f3e8d0;margin-bottom:12px}
-.pad-names{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:#f3e8d0;line-height:1.7;letter-spacing:.3px}
+/* veladura para que el texto oscuro no compita con las bandas claras */
+.pad-card::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 78% 62% at 50% 52%,rgba(255,247,224,.5),transparent 72%);
+}
+.pad-card > *{position:relative;z-index:1}
+.pad-ic{width:54px;height:54px;display:block;margin:0 auto 10px;filter:drop-shadow(0 1px 1px rgba(255,246,222,.55))}
+.pad-role{font-family:'Great Vibes',cursive;font-size:34px;line-height:1;color:var(--lamina-ink);margin-bottom:12px;text-shadow:0 1px 0 rgba(255,246,222,.6)}
+.pad-names{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--lamina-ink);line-height:1.7;letter-spacing:.3px;text-shadow:0 1px 0 rgba(255,246,222,.55)}
 .pad-arrows{display:flex;justify-content:center;gap:30px;margin-top:8px}
 .pad-arrow{
   width:46px;height:46px;border-radius:50%;
@@ -794,6 +807,16 @@ section>*{position:relative;z-index:1}
 }
 .h-frame::before{top:-5px;left:50%;transform:translateX(-50%)}
 .h-frame::after{bottom:-5px;left:50%;transform:translateX(-50%)}
+/* ── DESTELLOS DEL HERO ── */
+.h-star{
+  position:absolute;display:block;pointer-events:none;
+  background:radial-gradient(circle at 50% 50%,#fffdf7 0%,rgba(246,226,178,.85) 26%,rgba(212,172,85,.28) 52%,transparent 72%);
+  /* estrella de 4 puntas con lados cóncavos */
+  clip-path:polygon(50% 0%,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0% 50%,40% 40%);
+  filter:drop-shadow(0 0 5px rgba(246,226,178,.75));
+  will-change:transform,opacity;
+}
+
 .h-particles{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none}
 .h-cnt{
   position:relative;z-index:3;text-align:center;
@@ -1489,7 +1512,8 @@ body.gift-locked{overflow:hidden}
 .gr-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:10px;
   padding:15px 32px;border:none;border-radius:8px;
-  background:linear-gradient(135deg,var(--gold),var(--gold-lt));color:var(--ink);
+  background:var(--lamina);background-size:220% 220%;color:var(--lamina-ink);
+  animation:laminaSweep 7s ease-in-out infinite;
   font-family:'Jost',sans-serif;font-size:clamp(10px,2.8vw,12px);font-weight:700;
   letter-spacing:.24em;text-transform:uppercase;text-decoration:none;cursor:pointer;
   box-shadow:0 6px 26px rgba(212,197,178,.4);transition:transform .3s var(--spring)
@@ -1859,7 +1883,7 @@ body.gift-locked{overflow:hidden}
   <p class="cal-sub">Agrega nuestra boda a tu calendario<br>para no perderte ni un momento.</p>
   <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Boda+de+C%C3%A9sar+%26+Neidy&dates=20261107T160000/20261108T000000&details=Ceremonia+Religiosa+4:00+PM+-+Parroquia+Inmaculada+Concepci%C3%B3n+de+Mar%C3%ADa+%7C+Recepci%C3%B3n+5:00+PM+-+Sal%C3%B3n+Real+Sayil&location=Acolman+de+Nezahualc%C3%B3yotl%2C+Estado+de+M%C3%A9xico"
      target="_blank" rel="noopener" id="calBtn"
-     class="btn btn-gold" style="max-width:310px;margin:0 auto;display:flex;padding:16px 24px;font-size:clamp(11px,3vw,13px);letter-spacing:3px;border:none;box-shadow:0 6px 28px rgba(212,197,178,.55),0 0 30px rgba(212,197,178,.25),0 2px 4px rgba(0,0,0,.3)">
+     class="btn btn-gold" style="max-width:310px;margin:0 auto;display:flex;padding:16px 24px;font-size:clamp(11px,3vw,13px);letter-spacing:3px;border:none;box-shadow:0 6px 28px rgba(214,172,85,.5),0 0 30px rgba(228,196,120,.28),0 2px 6px rgba(0,0,0,.45)">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     Agregar a Google Calendar
   </a>
@@ -3025,24 +3049,26 @@ function initBgOrbs() {
 /* ── PARTICLES ─────────────────────────────────────── */
 function spawnParticles() {
   const c = document.getElementById('hPart');
-  for (let i = 0; i < 22; i++) {
-    const p = document.createElement('div');
-    const sz = Math.random() * 2.8 + .6;
+  if (!c) return;
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('span');
+    p.className = 'h-star';
+    const sz = Math.random() * 11 + 6;
     Object.assign(p.style, {
-      position: 'absolute', width: sz + 'px', height: sz + 'px',
-      background: '#D4C5B2', borderRadius: '50%',
-      left: Math.random() * 100 + '%', bottom: '-8px',
-      opacity: '0', willChange: 'transform,opacity'
+      width: sz + 'px', height: sz + 'px',
+      left: Math.random() * 100 + '%', bottom: '-14px',
+      opacity: '0'
     });
     c.appendChild(p);
     gsap.to(p, {
       y: -(window.innerHeight * (.5 + Math.random() * .8)),
-      opacity: Math.random() * .55 + .08,
-      duration: 4 + Math.random() * 5,
-      delay: Math.random() * 4,
+      rotation: (Math.random() < .5 ? -1 : 1) * (60 + Math.random() * 120),
+      opacity: Math.random() * .5 + .12,
+      duration: 6 + Math.random() * 6,
+      delay: Math.random() * 5,
       ease: 'none', repeat: -1,
       onRepeat() {
-        gsap.set(p, { left: Math.random() * 100 + '%', bottom: '-8px', opacity: 0 });
+        gsap.set(p, { left: Math.random() * 100 + '%', bottom: '-14px', opacity: 0, rotation: 0 });
       }
     });
   }
@@ -3088,37 +3114,98 @@ function scrollAnims() {
   /* Global sparkle dust particles (optimized) */
   (function(){
     var cvs=document.getElementById('globalSparkles');if(!cvs)return;
-    var ctx=cvs.getContext('2d'),particles=[],count=40;
-    function resize(){cvs.width=window.innerWidth;cvs.height=window.innerHeight;}
+    var ctx=cvs.getContext('2d');
+    var dpr=Math.min(window.devicePixelRatio||1,2);
+    var particles=[],count=window.innerWidth<520?34:52;
+
+    function resize(){
+      cvs.width=window.innerWidth*dpr;cvs.height=window.innerHeight*dpr;
+      cvs.style.width=window.innerWidth+'px';cvs.style.height=window.innerHeight+'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
     resize();window.addEventListener('resize',resize);
     function rand(a,b){return a+Math.random()*(b-a);}
-    var glowCvs=document.createElement('canvas');
-    glowCvs.width=24;glowCvs.height=24;
-    var gc=glowCvs.getContext('2d');
-    gc.beginPath();gc.arc(12,12,4,0,Math.PI*2);
-    gc.fillStyle='rgba(233,224,212,.6)';gc.shadowBlur=10;gc.shadowColor='rgba(233,224,212,.5)';gc.fill();
-    function spawn(){
-      return{x:rand(0,cvs.width),y:cvs.height+rand(10,60),r:rand(1.2,2.4),
-        speed:rand(.2,.5),drift:rand(-.12,.12),
-        alpha:rand(.25,.6),pulse:rand(.006,.016),
-        phase:rand(0,Math.PI*2),life:0,maxLife:rand(400,900)};
+
+    /* El destello se dibuja UNA vez en un sprite y luego solo se rota y
+       escala: 52 estrellas a 60fps sin repintar path por frame. */
+    function makeStar(tint){
+      var S=64,c=document.createElement('canvas');
+      c.width=S;c.height=S;
+      var g=c.getContext('2d');
+      var cx=S/2, cy=S/2;
+
+      /* nucleo con halo */
+      var halo=g.createRadialGradient(cx,cy,0,cx,cy,S/2);
+      halo.addColorStop(0,'rgba(255,255,255,.95)');
+      halo.addColorStop(.14,tint.core);
+      halo.addColorStop(.42,tint.mid);
+      halo.addColorStop(1,'rgba(0,0,0,0)');
+      g.fillStyle=halo;g.beginPath();g.arc(cx,cy,S/2,0,Math.PI*2);g.fill();
+
+      /* cuatro puntas: dos husos cruzados, el vertical mas largo */
+      function spike(len,wid,rot){
+        g.save();g.translate(cx,cy);g.rotate(rot);
+        var lg=g.createLinearGradient(0,-len,0,len);
+        lg.addColorStop(0,'rgba(255,255,255,0)');
+        lg.addColorStop(.5,tint.spike);
+        lg.addColorStop(1,'rgba(255,255,255,0)');
+        g.fillStyle=lg;
+        g.beginPath();
+        g.moveTo(0,-len);g.quadraticCurveTo(wid,0,0,len);
+        g.quadraticCurveTo(-wid,0,0,-len);
+        g.closePath();g.fill();
+        g.restore();
+      }
+      spike(S/2,2.6,0);
+      spike(S/2.35,2.2,Math.PI/2);
+      /* dos puntas diagonales cortas: el brillo de joyeria */
+      spike(S/5.2,1.3,Math.PI/4);
+      spike(S/5.2,1.3,-Math.PI/4);
+      return c;
     }
-    for(var i=0;i<count;i++){var p=spawn();p.y=rand(0,cvs.height);p.life=rand(0,p.maxLife);particles.push(p);}
+
+    var SPRITES=[
+      makeStar({core:'rgba(255,250,238,.95)',mid:'rgba(233,224,212,.30)',spike:'rgba(255,252,244,.9)'}),
+      makeStar({core:'rgba(246,226,178,.95)',mid:'rgba(212,172,85,.28)', spike:'rgba(250,232,190,.85)'}),
+      makeStar({core:'rgba(255,255,255,.98)',mid:'rgba(255,255,255,.22)',spike:'rgba(255,255,255,.95)'})
+    ];
+
+    function spawn(){
+      var big=Math.random()<.14;   /* unas pocas grandes mandan la escena */
+      return{
+        x:rand(0,window.innerWidth), y:window.innerHeight+rand(10,80),
+        s:big?rand(.46,.72):rand(.13,.32),
+        sprite:SPRITES[Math.random()<.30?1:(big?2:0)],
+        speed:big?rand(.10,.20):rand(.16,.42),
+        drift:rand(-.10,.10),
+        rot:rand(0,Math.PI*2), vrot:rand(-.0016,.0016),
+        alpha:big?rand(.34,.6):rand(.22,.5),
+        /* cada estrella parpadea a su propio ritmo */
+        pulse:rand(.005,.014), phase:rand(0,Math.PI*2),
+        life:0, maxLife:rand(520,1150)
+      };
+    }
+    for(var i=0;i<count;i++){var p=spawn();p.y=rand(0,window.innerHeight);p.life=rand(0,p.maxLife);particles.push(p);}
+
     function draw(){
-      ctx.clearRect(0,0,cvs.width,cvs.height);
+      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+      ctx.globalCompositeOperation='lighter';
       for(var i=0;i<particles.length;i++){
         var p=particles[i];
-        p.y-=p.speed;p.x+=p.drift;p.life++;
-        p.phase+=p.pulse;
-        var a=p.alpha*(0.5+0.5*Math.sin(p.phase));
-        var fade=1;
-        if(p.life<40)fade=p.life/40;
-        if(p.life>p.maxLife-60)fade=Math.max(0,(p.maxLife-p.life)/60);
-        a*=fade;
-        if(p.y<-10||p.life>=p.maxLife){particles[i]=spawn();continue;}
-        ctx.globalAlpha=a;
-        ctx.drawImage(glowCvs,p.x-12,p.y-12);
+        p.y-=p.speed;p.x+=p.drift;p.life++;p.phase+=p.pulse;p.rot+=p.vrot;
+        var tw=0.42+0.58*Math.pow((Math.sin(p.phase)+1)/2,1.7);  /* destello marcado, no un fade plano */
+        var a=p.alpha*tw;
+        if(p.life<50)a*=p.life/50;
+        if(p.life>p.maxLife-90)a*=Math.max(0,(p.maxLife-p.life)/90);
+        if(p.y<-60||p.life>=p.maxLife){particles[i]=spawn();continue;}
+        var sz=64*p.s*(0.92+0.08*tw);
+        ctx.save();
+        ctx.globalAlpha=Math.max(0,Math.min(1,a));
+        ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+        ctx.drawImage(p.sprite,-sz/2,-sz/2,sz,sz);
+        ctx.restore();
       }
+      ctx.globalCompositeOperation='source-over';
       ctx.globalAlpha=1;
       requestAnimationFrame(draw);
     }
