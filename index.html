@@ -168,7 +168,7 @@ section>*{position:relative;z-index:1}
 .ttl{
   font-family:'Great Vibes',cursive;
   font-size:clamp(38px,10.5vw,52px);font-weight:400;
-  text-align:center;line-height:1.15;margin-top:6px;
+  text-align:center;line-height:1.15;margin-top:16px;
   letter-spacing:.5px;padding:.06em 0;
   background:linear-gradient(100deg,#EFE7DA 0%,#FFFFFF 18%,#D4C5B2 38%,#FFFFFF 52%,#E9E0D4 70%,#FFFFFF 86%,#D4C5B2 100%);
   background-size:250% auto;
@@ -676,18 +676,19 @@ section>*{position:relative;z-index:1}
   color:var(--cream);opacity:.9;margin-top:clamp(16px,4vw,20px);
 }
 .dc-figures{
-  display:flex;align-items:flex-end;justify-content:center;gap:clamp(16px,5vw,30px);
+  display:flex;align-items:stretch;justify-content:center;gap:clamp(16px,5vw,30px);
   max-width:380px;margin:clamp(22px,6vw,30px) auto 0;
 }
 .dc-fig{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
 .dc-fig-plate{
   background:linear-gradient(180deg,#FBF7EF,#EFE7DA);
   border:1px solid rgba(212,197,178,.5);border-radius:14px;
-  padding:18px 14px 14px;display:flex;align-items:flex-end;justify-content:center;
+  width:clamp(130px,37vw,158px);height:clamp(196px,52vw,232px);
+  padding:16px 12px 12px;display:flex;align-items:flex-end;justify-content:center;
   box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.7);
 }
 .dc-fig img{
-  height:clamp(150px,40vw,190px);width:auto;display:block;
+  height:100%;width:auto;max-width:100%;object-fit:contain;display:block;
   filter:drop-shadow(0 6px 14px rgba(90,60,30,.28));
 }
 .dc-fig-label{
