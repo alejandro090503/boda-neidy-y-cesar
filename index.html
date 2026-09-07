@@ -680,9 +680,15 @@ section>*{position:relative;z-index:1}
   max-width:380px;margin:clamp(22px,6vw,30px) auto 0;
 }
 .dc-fig{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
+.dc-fig-plate{
+  background:linear-gradient(180deg,#FBF7EF,#EFE7DA);
+  border:1px solid rgba(212,197,178,.5);border-radius:14px;
+  padding:18px 14px 14px;display:flex;align-items:flex-end;justify-content:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.7);
+}
 .dc-fig img{
-  height:clamp(180px,48vw,220px);width:auto;display:block;
-  filter:drop-shadow(0 8px 18px rgba(0,0,0,.55));
+  height:clamp(150px,40vw,190px);width:auto;display:block;
+  filter:drop-shadow(0 6px 14px rgba(90,60,30,.28));
 }
 .dc-fig-label{
   font-family:'Cinzel',serif;font-size:clamp(9px,2.4vw,11px);font-weight:500;
@@ -697,10 +703,11 @@ section>*{position:relative;z-index:1}
   letter-spacing:.26em;text-transform:uppercase;color:var(--gold);opacity:.9;
   margin-bottom:clamp(12px,3vw,16px);
 }
-.dc-colors{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:330px;margin:0 auto}
+.dc-colors{display:flex;flex-wrap:wrap;justify-content:center;gap:32px 12px;max-width:330px;margin:0 auto}
 .dc-swatch{
   width:52px;height:52px;border-radius:50%;position:relative;
-  border:1.5px solid rgba(212,197,178,.28);
+  border:1.5px solid rgba(212,197,178,.45);
+  box-shadow:0 4px 14px rgba(0,0,0,.4);
   transition:transform .3s var(--spring);
 }
 .dc-swatch:active{transform:scale(1.1)}
@@ -718,7 +725,7 @@ section>*{position:relative;z-index:1}
   letter-spacing:.22em;text-transform:uppercase;color:#E0798A;
   margin-bottom:clamp(14px,3.5vw,18px);
 }
-.dc-avoid{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,4vw,20px);max-width:300px;margin:0 auto;padding-bottom:26px}
+.dc-avoid{display:flex;flex-wrap:wrap;justify-content:center;gap:34px clamp(14px,4vw,20px);max-width:300px;margin:0 auto;padding-bottom:26px}
 .dc-avoid .dc-swatch{
   width:clamp(62px,17vw,72px);height:clamp(62px,17vw,72px);
   border:2px solid rgba(224,121,138,.55);
@@ -1989,12 +1996,12 @@ body.gift-locked{overflow:hidden}
 
   <div class="dc-figures">
     <div class="dc-fig">
-      <img src="dama-vino.png" alt="Vestido formal para ellas" loading="lazy">
+      <div class="dc-fig-plate"><img src="dama-vino.png" alt="Vestido formal para ellas" loading="lazy"></div>
       <div class="dc-fig-label">Ellas</div>
     </div>
     <div class="dc-sep-line" aria-hidden="true"></div>
     <div class="dc-fig">
-      <img src="caballero.png" alt="Traje formal para ellos" loading="lazy">
+      <div class="dc-fig-plate"><img src="caballero.png" alt="Traje formal para ellos" loading="lazy"></div>
       <div class="dc-fig-label">Ellos</div>
     </div>
   </div>
