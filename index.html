@@ -166,11 +166,19 @@ section>*{position:relative;z-index:1}
   font-weight:500;
 }
 .ttl{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(24px,6.3vw,31px);font-weight:600;letter-spacing:.005em;
-  text-align:center;color:var(--cream);line-height:1.25;margin-top:8px;
-  letter-spacing:.5px;
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(38px,10.5vw,52px);font-weight:400;
+  text-align:center;line-height:1.15;margin-top:6px;
+  letter-spacing:.5px;padding:.06em 0;
+  background:linear-gradient(100deg,#EFE7DA 0%,#FFFFFF 18%,#D4C5B2 38%,#FFFFFF 52%,#E9E0D4 70%,#FFFFFF 86%,#D4C5B2 100%);
+  background-size:250% auto;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:#F2ECE2;
+  animation:ttlShimmer 4s linear infinite;
 }
+@keyframes ttlShimmer{to{background-position:250% center}}
+@media(prefers-reduced-motion:reduce){.ttl{animation:none}}
+
 .gline{
   width:50px;height:1px;
   background:linear-gradient(to right,transparent,var(--gold),transparent);
@@ -433,26 +441,61 @@ section>*{position:relative;z-index:1}
 #surprise{background:linear-gradient(180deg,var(--ink),#141209)}
 #spoiler{background:linear-gradient(180deg,#141209,var(--ink))}
 
-/* ── PADRINOS por rol ── */
-.pd-list{max-width:400px;margin:clamp(24px,6vw,32px) auto 0;display:flex;flex-direction:column}
-.pd-row{
-  position:relative;padding:clamp(15px,4vw,19px) 8px;text-align:center;
-  opacity:0;transform:translateY(18px);
-  transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1);
+/* ── PADRINOS · carrusel de placas (base: boda-josé-y-ana) ── */
+.pad-carousel{position:relative;margin-top:clamp(24px,6vw,30px)}
+.pad-viewport{overflow:hidden;padding:26px 0}
+.pad-track{display:flex;align-items:center;will-change:transform}
+/* card-placa: terracota oscuro, esquinas cóncavas (cartela) */
+.pad-card{
+  flex:0 0 72%;max-width:300px;
+  margin:0 1.6%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:226px;
+  position:relative;
+  background:linear-gradient(160deg,#7d2e1e 0%,#5a1f12 100%);
+  padding:32px 24px;text-align:center;
+  box-shadow:0 12px 30px rgba(0,0,0,.5);
+  opacity:.4;transform:scale(.88);
+  transition:opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1),box-shadow .55s ease;
+  --pr:18px;
+  -webkit-mask:
+    radial-gradient(var(--pr) at 0 0,#0000 98%,#000) 0 0,
+    radial-gradient(var(--pr) at 100% 0,#0000 98%,#000) 100% 0,
+    radial-gradient(var(--pr) at 0 100%,#0000 98%,#000) 0 100%,
+    radial-gradient(var(--pr) at 100% 100%,#0000 98%,#000) 100% 100%;
+  -webkit-mask-size:51% 51%;-webkit-mask-repeat:no-repeat;
+  mask:
+    radial-gradient(var(--pr) at 0 0,#0000 98%,#000) 0 0,
+    radial-gradient(var(--pr) at 100% 0,#0000 98%,#000) 100% 0,
+    radial-gradient(var(--pr) at 0 100%,#0000 98%,#000) 0 100%,
+    radial-gradient(var(--pr) at 100% 100%,#0000 98%,#000) 100% 100%;
+  mask-size:51% 51%;mask-repeat:no-repeat;
 }
-.pd-row.is-in{opacity:1;transform:none}
-.pd-row + .pd-row::before{
-  content:'';position:absolute;top:0;left:22%;right:22%;height:1px;
-  background:linear-gradient(to right,transparent,rgba(212,197,178,.3),transparent);
+.pad-card.active{opacity:1;transform:scale(1);box-shadow:0 22px 54px rgba(0,0,0,.62)}
+/* marco interior crema fino (placa) */
+.pad-card::before{
+  content:'';position:absolute;inset:11px;
+  border:1px solid rgba(243,232,208,.34);border-radius:8px;
+  pointer-events:none;
 }
-.pd-role{
-  font-family:'Cinzel',serif;font-size:clamp(9px,2.4vw,11px);font-weight:500;
-  letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;
+.pad-ic{width:54px;height:54px;display:block;margin:0 auto 10px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))}
+.pad-role{font-family:'Great Vibes',cursive;font-size:34px;line-height:1;color:#f3e8d0;margin-bottom:12px}
+.pad-names{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:#f3e8d0;line-height:1.7;letter-spacing:.3px}
+.pad-arrows{display:flex;justify-content:center;gap:30px;margin-top:8px}
+.pad-arrow{
+  width:46px;height:46px;border-radius:50%;
+  border:1.5px solid rgba(212,197,178,.35);
+  background:rgba(10,9,8,.55);
+  color:var(--gold);font-size:20px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .25s,transform .25s,border-color .25s;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
 }
-.pd-nm{
-  font-family:'Playfair Display',serif;font-weight:500;
-  font-size:clamp(17px,4.6vw,20px);color:var(--cream);line-height:1.45;
-}
+.pad-arrow:active{transform:scale(.92);background:rgba(212,197,178,.16);border-color:var(--gold)}
+.pad-arrow:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.pad-dots{display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap;max-width:240px;margin-left:auto;margin-right:auto}
+.pad-dot{width:7px;height:7px;border-radius:50%;background:rgba(212,197,178,.28);cursor:pointer;transition:background .3s,transform .3s}
+.pad-dot.active{background:var(--gold);transform:scale(1.35)}
 
 /* ── DAMAS Y BEST MAN · uno a uno en una sola tarjeta ── */
 .bm-stage{position:relative;max-width:400px;margin:clamp(22px,6vw,30px) auto 0}
@@ -571,6 +614,134 @@ section>*{position:relative;z-index:1}
   letter-spacing:.26em;text-transform:uppercase;color:var(--gold);
   margin-top:clamp(18px,5vw,24px);display:block}
 .qt-bar{width:36px;height:1px;background:var(--gold);margin:18px auto 0;opacity:.45}
+
+/* ── NUESTRA HISTORIA ── */
+#story{background:linear-gradient(180deg,var(--ink2),#100e0a);text-align:center}
+.st-wrap{max-width:400px;margin:clamp(26px,7vw,34px) auto 0;position:relative}
+.st-orn{width:44px;height:auto;color:var(--gold);opacity:.8;margin:0 auto clamp(16px,4vw,22px);display:block}
+.st-txt{
+  font-family:'Playfair Display',serif;font-style:italic;font-weight:400;
+  font-size:clamp(16px,4.3vw,18px);line-height:1.95;
+  color:var(--cream);opacity:.92;text-align:center;
+}
+.st-txt::first-letter{
+  font-size:2.6em;line-height:.85;float:left;padding:6px 10px 0 0;
+  color:var(--gold);font-style:normal;font-weight:600;
+}
+.st-bar{width:46px;height:1px;background:var(--gold);margin:clamp(20px,5vw,26px) auto 0;opacity:.45}
+
+/* ── PREGUNTAS FRECUENTES ── */
+#faq{background:linear-gradient(180deg,#100e0a,var(--ink3))}
+.faq-list{max-width:430px;margin:clamp(26px,7vw,34px) auto 0}
+.faq-item{
+  border-bottom:1px solid rgba(212,197,178,.16);
+  opacity:0;transform:translateY(16px);
+  transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1);
+}
+.faq-item.is-in{opacity:1;transform:none}
+.faq-q{
+  width:100%;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:clamp(15px,4vw,18px) 4px;text-align:left;
+  font-family:'Playfair Display',serif;font-weight:600;
+  font-size:clamp(15px,4vw,17px);line-height:1.4;color:var(--cream);
+  -webkit-tap-highlight-color:transparent;
+}
+.faq-q:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+.faq-ic{
+  flex-shrink:0;width:22px;height:22px;position:relative;
+  transition:transform .45s cubic-bezier(.2,.7,.2,1);
+}
+.faq-ic::before,.faq-ic::after{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:var(--gold);border-radius:2px;
+}
+.faq-ic::before{width:13px;height:1.4px}
+.faq-ic::after{width:1.4px;height:13px;transition:opacity .35s,transform .45s}
+.faq-item.open .faq-ic{transform:rotate(180deg)}
+.faq-item.open .faq-ic::after{opacity:0;transform:translate(-50%,-50%) scaleY(0)}
+.faq-a{overflow:hidden;max-height:0;transition:max-height .5s cubic-bezier(.2,.7,.2,1)}
+.faq-a p{
+  font-family:'Jost',sans-serif;font-weight:400;
+  font-size:clamp(14px,3.8vw,16px);line-height:1.75;
+  color:var(--cream);opacity:.82;padding:0 4px clamp(16px,4vw,20px);
+}
+
+/* ── DRESS CODE (figuras de boda-berenice-y-enrique,
+      formato de colores de boda-jennifer-tello-y-omar-gomez) ── */
+#dresscode{text-align:center}
+.dc-note{
+  font-family:'Playfair Display',serif;font-style:italic;font-weight:500;
+  font-size:clamp(15px,4vw,17px);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--cream);opacity:.9;margin-top:clamp(16px,4vw,20px);
+}
+.dc-figures{
+  display:flex;align-items:flex-end;justify-content:center;gap:clamp(16px,5vw,30px);
+  max-width:380px;margin:clamp(22px,6vw,30px) auto 0;
+}
+.dc-fig{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
+.dc-fig img{
+  height:clamp(180px,48vw,220px);width:auto;display:block;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.55));
+}
+.dc-fig-label{
+  font-family:'Cinzel',serif;font-size:clamp(9px,2.4vw,11px);font-weight:500;
+  letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-top:14px;
+}
+.dc-sep-line{width:1px;align-self:stretch;margin:18px 0;
+  background:linear-gradient(to bottom,transparent,rgba(212,197,178,.3),transparent)}
+
+.dc-group{margin-top:clamp(26px,7vw,34px)}
+.dc-group-ttl{
+  font-family:'Cinzel',serif;font-size:clamp(9px,2.4vw,11px);font-weight:500;
+  letter-spacing:.26em;text-transform:uppercase;color:var(--gold);opacity:.9;
+  margin-bottom:clamp(12px,3vw,16px);
+}
+.dc-colors{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:330px;margin:0 auto}
+.dc-swatch{
+  width:52px;height:52px;border-radius:50%;position:relative;
+  border:1.5px solid rgba(212,197,178,.28);
+  transition:transform .3s var(--spring);
+}
+.dc-swatch:active{transform:scale(1.1)}
+.dc-swatch b{
+  position:absolute;left:50%;top:calc(100% + 7px);transform:translateX(-50%);
+  white-space:nowrap;font-family:'Jost',sans-serif;font-size:10px;font-weight:500;
+  letter-spacing:.08em;color:var(--cream);opacity:.62;
+}
+.dc-colors{padding-bottom:22px}
+
+/* Los tonos a EVITAR pesan mas que los sugeridos: son mas grandes,
+   llevan aspa y su titulo va en rojo. Es lo que menos debe fallar. */
+.dc-avoid-ttl{
+  font-family:'Cinzel',serif;font-size:clamp(11px,3vw,13px);font-weight:600;
+  letter-spacing:.22em;text-transform:uppercase;color:#E0798A;
+  margin-bottom:clamp(14px,3.5vw,18px);
+}
+.dc-avoid{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,4vw,20px);max-width:300px;margin:0 auto;padding-bottom:26px}
+.dc-avoid .dc-swatch{
+  width:clamp(62px,17vw,72px);height:clamp(62px,17vw,72px);
+  border:2px solid rgba(224,121,138,.55);
+  box-shadow:0 0 0 4px rgba(224,121,138,.12),0 8px 22px rgba(0,0,0,.5);
+}
+.dc-avoid .dc-swatch::after{
+  content:'';position:absolute;inset:-2px;border-radius:50%;
+  background:linear-gradient(to bottom right,transparent calc(50% - 1.2px),#E0798A calc(50% - 1.2px),#E0798A calc(50% + 1.2px),transparent calc(50% + 1.2px));
+}
+.dc-avoid .dc-swatch b{font-size:11px;font-weight:600;opacity:.92;color:#F0C3CB}
+.dc-phrase{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(16px,4.3vw,18px);line-height:1.6;color:var(--cream);opacity:.9;
+  max-width:330px;margin:clamp(24px,6vw,32px) auto 0;
+}
+.dc-warn{
+  display:inline-flex;align-items:center;gap:9px;
+  margin-top:clamp(22px,5vw,28px);padding:11px 20px;border-radius:40px;
+  border:1px solid rgba(224,121,138,.4);background:rgba(224,121,138,.07);
+  font-family:'Jost',sans-serif;font-size:clamp(11px,3vw,12.5px);font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:#F0C3CB;
+}
+.dc-warn svg{width:15px;height:15px;flex-shrink:0}
 
 /* ── SECTION DIVIDERS ──────────────────── */
 .sec-divider{
@@ -1067,35 +1238,6 @@ section>*{position:relative;z-index:1}
   padding-bottom:clamp(20px,5vw,30px);
 }
 #globalSparkles{position:fixed;inset:0;pointer-events:none;z-index:9}
-.dc-sub{
-  text-align:center;font-size:clamp(13px,3.4vw,15px);
-  color:var(--cream);opacity:.6;line-height:1.7;margin:10px 0 clamp(18px,4vw,24px);
-}
-.palette{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-bottom:clamp(8px,2vw,14px)}
-.pal-item{text-align:center;cursor:pointer}
-.pal-sw{
-  width:clamp(32px,9vw,40px);height:clamp(32px,9vw,40px);border-radius:50%;
-  margin:0 auto 6px;
-  border:2px solid rgba(255,255,255,.12);
-  box-shadow:0 4px 14px rgba(0,0,0,.35),0 0 0 1px rgba(212,197,178,.1);
-  will-change:transform;
-  transition:transform .2s var(--spring),box-shadow .2s;
-}
-.pal-sw:active{transform:scale(1.18)!important}
-.pal-nm{font-size:clamp(8px,2.2vw,10px);letter-spacing:1.5px;text-transform:uppercase;color:var(--cream);opacity:.5}
-.dc-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-.dc-col{background:#ffffff;border:1px solid rgba(255,255,255,.9);border-radius:14px;padding:24px 14px 18px;text-align:center;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-height:300px;box-shadow:0 8px 32px rgba(0,0,0,.22)}
-.dc-col::before{content:none}
-.dc-illustration{height:200px;width:auto;display:block;margin:0 auto;filter:drop-shadow(0 8px 14px rgba(10,9,8,.18));animation:dcLevitate 3s ease-in-out infinite}
-@keyframes dcLevitate{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.02)}}
-.dc-col-ttl{font-family:'Playfair Display',serif;font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:#3a3020;margin-top:18px;opacity:.85}
-.dc-note{
-  background:linear-gradient(135deg,rgba(212,197,178,.06),rgba(212,197,178,.02));
-  border-left:2px solid var(--gold);
-  padding:clamp(16px,4vw,22px) clamp(16px,4vw,20px);border-radius:0 10px 10px 0;
-  font-size:clamp(12px,3.2vw,14px);color:var(--cream);opacity:.65;line-height:1.85;
-}
-.dc-note strong{font-family:'Playfair Display',serif;font-size:clamp(14px,3.8vw,16px);color:var(--gold);display:block;margin-bottom:8px}
 
 /* ── FAMILY ────────────────────────────── */
 #family{
@@ -1479,6 +1621,7 @@ body.gift-locked{overflow:hidden}
 <nav id="nav-panel" aria-label="Secciones de la invitación">
   <ul class="nav-lista">
     <li><a href="#invite">Nuestra invitación</a></li>
+    <li><a href="#story">Nuestra historia</a></li>
     <li><a href="#location">Ceremonia y recepción</a></li>
     <li><a href="#weather">El clima</a></li>
     <li><a href="#itinerary">Itinerario</a></li>
@@ -1493,6 +1636,7 @@ body.gift-locked{overflow:hidden}
     <li><a href="#album">Álbum compartido</a></li>
     <li><a href="#songs">Sugerencia de canciones</a></li>
     <li><a href="#wishes">Buenos deseos</a></li>
+    <li><a href="#faq">Preguntas frecuentes</a></li>
     <li><a href="#contact">Contáctanos</a></li>
     <li><a href="#rsvp" class="nav-rsvp">Confirmar asistencia</a></li>
   </ul>
@@ -1558,6 +1702,22 @@ body.gift-locked{overflow:hidden}
     <div class="qt-bar"></div>
   </div>
 </section>
+
+<!-- NUESTRA HISTORIA -->
+<section id="story">
+  <span class="lbl">Cómo empezó todo</span>
+  <h2 class="ttl">Nuestra Historia</h2>
+  <div class="gline"></div>
+
+  <div class="st-wrap rvc">
+    <svg class="st-orn" viewBox="0 0 44 34" fill="none" aria-hidden="true">
+      <path d="M22 31 C22 31 4 21 4 12.5 C4 7.3 8.1 4 12.4 4 C16 4 19.4 6.2 22 10 C24.6 6.2 28 4 31.6 4 C35.9 4 40 7.3 40 12.5 C40 21 22 31 22 31 Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+    </svg>
+    <p class="st-txt">Desde que coincidimos por primera vez en aquel curso de estudiantes, supimos que nuestro camino iría hacia el mismo lugar. Años de amor, vivencias y la bendición de formar una familia maravillosa con nuestros hijos nos han traído hasta este momento. Ahora, con enorme gratitud y alegría, nos uniremos en matrimonio por la iglesia para bendecir nuestro amor, y no hay mejor manera de hacerlo que acompañados por ustedes.</p>
+    <div class="st-bar"></div>
+  </div>
+</section>
+
 
 <!-- 2. CUENTA REGRESIVA -->
 <section id="countdown">
@@ -1643,7 +1803,7 @@ body.gift-locked{overflow:hidden}
 
   <div class="loc-card">
     <p class="loc-type" style="text-align:center">✦  Ceremonia Religiosa</p>
-    <h3 class="loc-name" style="text-align:center;font-family:'Great Vibes',cursive;font-size:clamp(28px,8vw,38px)">Iglesia de Santa María</h3>
+    <h3 class="loc-name" style="text-align:center;font-family:'Great Vibes',cursive;font-size:clamp(28px,8vw,38px)">Parroquia Inmaculada Concepción de María</h3>
     <div class="loc-time" style="text-align:center">4:00 <em>PM</em></div>
     <p class="loc-addr" style="text-align:center">Santa María Acolman · Acolman, Estado de México</p>
     <a href="https://maps.app.goo.gl/3MNawczdtiruh42c9?g_st=ac"
@@ -1670,10 +1830,10 @@ body.gift-locked{overflow:hidden}
 <!-- 4. CALENDAR -->
 <section id="calendar">
   <span class="lbl">No lo olvides</span>
-  <h2 class="ttl" style="font-size:clamp(22px,6vw,28px)">Guarda la Fecha</h2>
+  <h2 class="ttl">Guarda la Fecha</h2>
   <div class="gline"></div>
   <p class="cal-sub">Agrega nuestra boda a tu calendario<br>para no perderte ni un momento.</p>
-  <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Boda+de+C%C3%A9sar+%26+Neidy&dates=20261107T160000/20261108T000000&details=Ceremonia+Religiosa+4:00+PM+-+Iglesia+de+Santa+Mar%C3%ADa+%7C+Recepci%C3%B3n+5:00+PM+-+Sal%C3%B3n+Real+Sayil&location=Acolman+de+Nezahualc%C3%B3yotl%2C+Estado+de+M%C3%A9xico"
+  <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Boda+de+C%C3%A9sar+%26+Neidy&dates=20261107T160000/20261108T000000&details=Ceremonia+Religiosa+4:00+PM+-+Parroquia+Inmaculada+Concepci%C3%B3n+de+Mar%C3%ADa+%7C+Recepci%C3%B3n+5:00+PM+-+Sal%C3%B3n+Real+Sayil&location=Acolman+de+Nezahualc%C3%B3yotl%2C+Estado+de+M%C3%A9xico"
      target="_blank" rel="noopener" id="calBtn"
      class="btn btn-gold" style="max-width:310px;margin:0 auto;display:flex;padding:16px 24px;font-size:clamp(11px,3vw,13px);letter-spacing:3px;border:none;box-shadow:0 6px 28px rgba(212,197,178,.55),0 0 30px rgba(212,197,178,.25),0 2px 4px rgba(0,0,0,.3)">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -1682,51 +1842,7 @@ body.gift-locked{overflow:hidden}
 </section>
 
 
-<!-- 4b. CLIMA -->
-<section id="weather">
-  <span class="lbl">Toma tus precauciones</span>
-  <h2 class="ttl">El Clima esa Semana</h2>
-  <div class="gline"></div>
-  <p class="wx-sub">prepárate para la ocasión</p>
 
-  <div class="wx-dash">
-    <div class="wx-gauge">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <defs>
-          <linearGradient id="wxGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#8A7A62"/>
-            <stop offset="50%" stop-color="#D4C5B2"/>
-            <stop offset="100%" stop-color="#E9E0D4"/>
-          </linearGradient>
-        </defs>
-        <circle class="wx-gauge-bg" cx="50" cy="50" r="45"/>
-        <circle class="wx-gauge-fill" id="wxArc" cx="50" cy="50" r="45"/>
-      </svg>
-      <div class="wx-gauge-center">
-        <div class="wx-pct">10<span>%</span></div>
-        <div class="wx-lbl">Prob. de lluvia</div>
-      </div>
-    </div>
-
-    <div class="wx-temps">
-      <div class="wx-row">
-        <div class="wx-val">23°<span>C</span></div>
-        <div class="wx-cap">Día</div>
-      </div>
-      <div class="wx-div"></div>
-      <div class="wx-row">
-        <div class="wx-val">8°<span>C</span></div>
-        <div class="wx-cap">Noche</div>
-      </div>
-      <div class="wx-div"></div>
-      <p class="wx-note">Noviembre en Acolman es seco y fresco — la noche baja bastante</p>
-    </div>
-  </div>
-
-  <p class="wx-text">La tarde será templada y agradable, pero al caer la noche la temperatura desciende. Te recomendamos traer un abrigo, saco o chal elegante para disfrutar la fiesta con toda comodidad.</p>
-
-  <a class="wx-link" href="https://www.google.com/search?q=clima+Acolman+7+noviembre+2026" target="_blank" rel="noopener">Consulta el pronóstico actualizado</a>
-</section>
 
 <!-- 5. ITINERARIO -->
 <section id="itinerary">
@@ -1743,7 +1859,7 @@ body.gift-locked{overflow:hidden}
 
     <div class="tl-row" data-side="left">
       <div class="tl-orn"></div><div class="tl-pulse"></div><div class="tl-dot"></div>
-      <div class="tl-row-inner"><p class="tl-t">4:00 PM</p><p class="tl-ev">Ceremonia Religiosa</p><p class="tl-de">Iglesia de Santa María</p></div>
+      <div class="tl-row-inner"><p class="tl-t">4:00 PM</p><p class="tl-ev">Ceremonia Religiosa</p><p class="tl-de">Parroquia Inmaculada Concepción de María</p></div>
     </div>
     <div class="tl-row" data-side="right">
       <div class="tl-orn"></div><div class="tl-pulse"></div><div class="tl-dot"></div>
@@ -1866,27 +1982,62 @@ body.gift-locked{overflow:hidden}
 
 <!-- 9. DRESS CODE -->
 <section id="dresscode">
-  <span class="lbl">Vestimenta</span>
-  <h2 class="ttl">Código de Vestimenta</h2>
+  <span class="lbl">Etiqueta</span>
+  <h2 class="ttl">Dress Code</h2>
   <div class="gline"></div>
-  <p class="dc-sub" style="font-family:'Great Vibes',cursive;font-size:clamp(32px,9vw,48px);color:#fff;opacity:1;line-height:1.3;letter-spacing:1px">Formal</p>
+  <p class="dc-note">Formal · Colores oscuros e intensos</p>
 
-  <div class="dc-cols" id="dcCols">
-    <div class="dc-col">
-      <img src="dress-caballero.png" alt="Traje formal caballero" class="dc-illustration" width="160" height="280" loading="lazy">
-      <div class="dc-col-ttl">Caballeros</div>
+  <div class="dc-figures">
+    <div class="dc-fig">
+      <img src="dama-vino.png" alt="Vestido formal para ellas" loading="lazy">
+      <div class="dc-fig-label">Ellas</div>
     </div>
-    <div class="dc-col">
-      <img src="dress-dama.png" alt="Vestido formal dama" class="dc-illustration" width="160" height="280" loading="lazy">
-      <div class="dc-col-ttl">Damas</div>
+    <div class="dc-sep-line" aria-hidden="true"></div>
+    <div class="dc-fig">
+      <img src="caballero.png" alt="Traje formal para ellos" loading="lazy">
+      <div class="dc-fig-label">Ellos</div>
     </div>
   </div>
-  <p style="margin-top:18px;font-family:'Great Vibes',cursive;font-size:clamp(24px,7vw,36px);color:#fff;text-align:center;letter-spacing:1px;line-height:1.2">Elegante</p>
 
-  <p style="margin-top:24px;font-family:'Playfair Display',serif;font-size:clamp(13px,3.5vw,16px);letter-spacing:.14em;text-transform:uppercase;color:var(--cream);opacity:.7;text-align:center;margin-bottom:8px">Evitar estos colores</p>
-  <div class="palette" id="palette">
-    <div class="pal-item"><div class="pal-sw" style="background:#FFFFFF;border-color:rgba(212,197,178,.3)"></div><p class="pal-nm">Blanco</p></div>
-    <div class="pal-item"><div class="pal-sw" style="background:#11165C;border-color:rgba(212,197,178,.3)"></div><p class="pal-nm">Azul Marino</p></div>
+  <div class="dc-group">
+    <p class="dc-group-ttl">Tonos sugeridos</p>
+    <div class="dc-colors">
+      <div class="dc-swatch" style="background:#0a1f3d"><b>Medianoche</b></div>
+      <div class="dc-swatch" style="background:#1a3a2a"><b>Esmeralda</b></div>
+      <div class="dc-swatch" style="background:#3d2b1f"><b>Cacao</b></div>
+      <div class="dc-swatch" style="background:#3a1a4a"><b>Amatista</b></div>
+      <div class="dc-swatch" style="background:#4a5560"><b>Acero</b></div>
+      <div class="dc-swatch" style="background:#3a0a2a"><b>Ciruela</b></div>
+      <div class="dc-swatch" style="background:#123b3b"><b>Petróleo</b></div>
+      <div class="dc-swatch" style="background:#4a2020"><b>Caoba</b></div>
+    </div>
+  </div>
+
+  <div class="dc-group">
+    <p class="dc-avoid-ttl">Ellas · colores a evitar</p>
+    <div class="dc-avoid">
+      <div class="dc-swatch" style="background:#FFFFFF;border-color:rgba(224,121,138,.6)"><b>Blanco</b></div>
+      <div class="dc-swatch" style="background:#F3EDE2"><b>White off</b></div>
+      <div class="dc-swatch" style="background:#B4232B"><b>Rojo</b></div>
+      <div class="dc-swatch" style="background:#C9A227"><b>Dorado</b></div>
+      <div class="dc-swatch" style="background:#EBC7D4"><b>Pasteles</b></div>
+    </div>
+  </div>
+
+  <div class="dc-group">
+    <p class="dc-avoid-ttl">Ellos · color a evitar</p>
+    <div class="dc-avoid">
+      <div class="dc-swatch" style="background:#11165C"><b>Azul marino</b></div>
+    </div>
+  </div>
+
+  <p class="dc-phrase">«Elegante, porque esta ocasión lo merece»<br>y habrá muchos paparazzis</p>
+
+  <div class="dc-warn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>
+    </svg>
+    Evitar mezclilla, estampados y neón
   </div>
 </section>
 
@@ -1988,27 +2139,41 @@ body.gift-locked{overflow:hidden}
   <h2 class="ttl">Padrinos</h2>
   <div class="gline"></div>
 
-  <div class="pd-list" id="pdList">
-    <div class="pd-row">
-      <p class="pd-role">Velación y Lazo</p>
-      <p class="pd-nm">Edgar Velasquez<br>y Fátima Rivero</p>
+  <div class="pad-carousel" id="padCarousel">
+    <div class="pad-viewport">
+      <div class="pad-track">
+        <div class="pad-card">
+          <img class="pad-ic" src="icons/padrinos/velacion.svg" alt="" width="54" height="54" aria-hidden="true">
+          <p class="pad-role">Velación y Lazo</p>
+          <p class="pad-names">Edgar Velasquez<br>y Fátima Rivero</p>
+        </div>
+        <div class="pad-card">
+          <img class="pad-ic" src="icons/padrinos/anillos.svg" alt="" width="54" height="54" aria-hidden="true">
+          <p class="pad-role">Anillos</p>
+          <p class="pad-names">Ricardo Cuéllar<br>y Brenda Cruz</p>
+        </div>
+        <div class="pad-card">
+          <img class="pad-ic" src="icons/padrinos/arras.svg" alt="" width="54" height="54" aria-hidden="true">
+          <p class="pad-role">Arras</p>
+          <p class="pad-names">Ricardo Cuéllar<br>y Patricia Sánchez</p>
+        </div>
+        <div class="pad-card">
+          <img class="pad-ic" src="icons/padrinos/copas.svg" alt="" width="54" height="54" aria-hidden="true">
+          <p class="pad-role">Copas</p>
+          <p class="pad-names">Miriam y Christian</p>
+        </div>
+        <div class="pad-card">
+          <img class="pad-ic" src="icons/padrinos/ramo.svg" alt="" width="54" height="54" aria-hidden="true">
+          <p class="pad-role">Ramo</p>
+          <p class="pad-names">Ivonne Martinez</p>
+        </div>
+      </div>
     </div>
-    <div class="pd-row">
-      <p class="pd-role">Anillos</p>
-      <p class="pd-nm">Ricardo Cuéllar<br>y Brenda Cruz</p>
+    <div class="pad-arrows">
+      <button class="pad-arrow" id="padPrev" type="button" aria-label="Padrino anterior">‹</button>
+      <button class="pad-arrow" id="padNext" type="button" aria-label="Siguiente padrino">›</button>
     </div>
-    <div class="pd-row">
-      <p class="pd-role">Arras</p>
-      <p class="pd-nm">Ricardo Cuéllar<br>y Patricia Sánchez</p>
-    </div>
-    <div class="pd-row">
-      <p class="pd-role">Copas</p>
-      <p class="pd-nm">Miriam y Christian</p>
-    </div>
-    <div class="pd-row">
-      <p class="pd-role">Ramo</p>
-      <p class="pd-nm">Ivonne Martinez</p>
-    </div>
+    <div class="pad-dots" id="padDots"></div>
   </div>
 </section>
 
@@ -2209,6 +2374,53 @@ body.gift-locked{overflow:hidden}
   </button>
 </section>
 
+<!-- 4b. CLIMA -->
+<section id="weather">
+  <span class="lbl">Toma tus precauciones</span>
+  <h2 class="ttl">El Clima esa Semana</h2>
+  <div class="gline"></div>
+  <p class="wx-sub">prepárate para la ocasión</p>
+
+  <div class="wx-dash">
+    <div class="wx-gauge">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <linearGradient id="wxGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#8A7A62"/>
+            <stop offset="50%" stop-color="#D4C5B2"/>
+            <stop offset="100%" stop-color="#E9E0D4"/>
+          </linearGradient>
+        </defs>
+        <circle class="wx-gauge-bg" cx="50" cy="50" r="45"/>
+        <circle class="wx-gauge-fill" id="wxArc" cx="50" cy="50" r="45"/>
+      </svg>
+      <div class="wx-gauge-center">
+        <div class="wx-pct">10<span>%</span></div>
+        <div class="wx-lbl">Prob. de lluvia</div>
+      </div>
+    </div>
+
+    <div class="wx-temps">
+      <div class="wx-row">
+        <div class="wx-val">23°<span>C</span></div>
+        <div class="wx-cap">Día</div>
+      </div>
+      <div class="wx-div"></div>
+      <div class="wx-row">
+        <div class="wx-val">8°<span>C</span></div>
+        <div class="wx-cap">Noche</div>
+      </div>
+      <div class="wx-div"></div>
+      <p class="wx-note">Noviembre en Acolman es seco y fresco — la noche baja bastante</p>
+    </div>
+  </div>
+
+  <p class="wx-text">La tarde será templada y agradable, pero al caer la noche la temperatura desciende. Te recomendamos traer un abrigo, saco o chal elegante para disfrutar la fiesta con toda comodidad.</p>
+
+  <a class="wx-link" href="https://www.google.com/search?q=clima+Acolman+7+noviembre+2026" target="_blank" rel="noopener">Consulta el pronóstico actualizado</a>
+</section>
+
+
 <!-- 11d. CONTACTO -->
 <section id="contact">
   <span class="lbl">¿Alguna duda?</span>
@@ -2243,6 +2455,53 @@ body.gift-locked{overflow:hidden}
   </div>
 </section>
 
+<!-- PREGUNTAS FRECUENTES -->
+<section id="faq">
+  <span class="lbl">Antes de que preguntes</span>
+  <h2 class="ttl">Preguntas Frecuentes</h2>
+  <div class="gline"></div>
+
+  <div class="faq-list" id="faqList">
+    <div class="faq-item">
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a0">¿A qué hora debo llegar?<span class="faq-ic" aria-hidden="true"></span></button>
+      <div class="faq-a" id="faq-a0"><p>Te pedimos llegar entre 15 y 20 minutos antes del inicio de la ceremonia para acomodarte con calma. La recepción empezará con un cóctel y la hora la encontrarán en el itinerario.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a1">¿Puedo llevar acompañantes extras?<span class="faq-ic" aria-hidden="true"></span></button>
+      <div class="faq-a" id="faq-a1"><p>Con mucho cariño, hemos reservado este día especialmente para las personas indicadas en esta invitación. Agradecemos su comprensión al no añadir invitados adicionales.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a2">¿Cuál es el código de vestimenta?<span class="faq-ic" aria-hidden="true"></span></button>
+      <div class="faq-a" id="faq-a2"><p>Vístete para celebrar con nosotros: el código de vestimenta es Formal. Dejemos el blanco para la novia y azul marino para el novio y llenemos este día de color, elegancia y alegría.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a3">¿Las dos sedes están en el mismo lugar?<span class="faq-ic" aria-hidden="true"></span></button>
+      <div class="faq-a" id="faq-a3"><p>No. La ceremonia es en la Parroquia Santuario Inmaculada Concepción de María (Santa María Acolman) y la recepción en Salón Real Sayil (Acolman). Hay unos 3.1 km entre ambas, de 9 a 12 minutos en coche.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a4">¿Hay estacionamiento?<span class="faq-ic" aria-hidden="true"></span></button>
+      <div class="faq-a" id="faq-a4"><p>En la iglesia Santa María Acolman hay estacionamiento en los alrededores. En Salón Real Sayil hay estacionamiento propio y gratuito.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a5">¿Qué tiempo hace en Noviembre?<span class="faq-ic" aria-hidden="true"></span></button>
+      <div class="faq-a" id="faq-a5"><p>La temperatura aproximada estará rondando entre los 18 °C y 20 °C, ya descendiendo desde la máxima del día, algún frente frío puede refrescar la noche, así que un abrigo o saco no sobra.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a6">¿Qué hoteles recomiendan?<span class="faq-ic" aria-hidden="true"></span></button>
+      <div class="faq-a" id="faq-a6"><p>Te dejamos opciones a distintos precios en la sección.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a7">¿Cómo me muevo por la zona?<span class="faq-ic" aria-hidden="true"></span></button>
+      <div class="faq-a" id="faq-a7"><p>Uber y Didi funcionan con normalidad. Tanto la iglesia como el salón quedan cerca de la salida de la autopista México - Teotihuacán.</p></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" type="button" aria-expanded="false" aria-controls="faq-a8">¿Puedo tomar fotos?<span class="faq-ic" aria-hidden="true"></span></button>
+      <div class="faq-a" id="faq-a8"><p>Claro que sí. Solo te pedimos que durante la ceremonia guardes el teléfono para vivirla con nosotros. Después, todas las fotos que quieras — y súbelas a nuestro álbum compartido.</p></div>
+    </div>
+  </div>
+</section>
+
+
 <!-- 12. RSVP -->
 <section id="rsvp">
   <div class="rsvp-card">
@@ -2266,7 +2525,7 @@ body.gift-locked{overflow:hidden}
       </svg>
 
       <span class="lbl" style="margin-bottom:8px">Confirmación</span>
-      <h2 class="ttl" style="font-size:clamp(28px,7vw,38px);margin-bottom:14px">¿Nos acompañas?</h2>
+      <h2 class="ttl" style="margin-bottom:14px">¿Nos acompañas?</h2>
       <p class="rsvp-text">Confirma tu asistencia antes del <strong style="color:var(--gold)">20 de Septiembre de 2026</strong>. Nos encantará saber que estarás con nosotros.</p>
       <p class="rsvp-text" style="margin-top:10px">Para permitir a todos nuestros invitados una velada de desconexión y celebración, solicitamos respetuosamente que la asistencia sea de <strong style="color:var(--gold)">únicamente mayores de edad</strong>.</p>
 
@@ -2466,6 +2725,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollAnims();
     initMenu();
     initEditorialReveal();
+    initFAQ();
     initPadrinos();
     initOneByOne('bridesmaids', 'dhFrame', 'dhDots');
     initOneByOne('godparents', 'bmFrame', 'bmDots');
@@ -2660,13 +2920,8 @@ function scrollAnims() {
     }
   });
 
-  gsap.fromTo('.dc-sub', {opacity:0, y:20}, {opacity:1, y:0, duration:.7, ease, immediateRender:false, scrollTrigger: { trigger: '#dresscode', start: 'top 82%', once: true }});
-  gsap.fromTo('.dc-col', {opacity:0, y:30, scale:.9}, {opacity:1, y:0, scale:1, duration:.7, stagger:.15, ease:'back.out(1.5)', immediateRender:false, scrollTrigger: { trigger: '#dcCols', start: 'top 86%', once: true }});
-  gsap.set('.pal-sw', { scale: 0 });
-  ScrollTrigger.create({
-    trigger: '#palette', start: 'top 86%', once: true,
-    onEnter() {
-      gsap.to('.pal-sw', { scale: 1, duration: .6, stagger: .1, ease: 'back.out(2.2)' });
+  gsap.fromTo('.dc-fig', {opacity:0, y:26}, {opacity:1, y:0, duration:.8, stagger:.16, ease, immediateRender:false, scrollTrigger:{ trigger:'#dresscode', start:'top 82%', once:true }});
+  gsap.fromTo('.dc-swatch', {opacity:0, scale:.6}, {opacity:1, scale:1, duration:.55, stagger:.045, ease:'back.out(2)', immediateRender:false, scrollTrigger:{ trigger:'.dc-group', start:'top 86%', once:true }});
     }
   });
 
@@ -3033,19 +3288,120 @@ function initOneByOne(secId, frameId, dotsId){
   ScrollTrigger.create({ trigger:'#'+secId, start:'top 82%', once:true, onEnter:restart });
 }
 
-/* ── PADRINOS · los roles entran en cascada ───── */
-function initPadrinos(){
-  var list = document.getElementById('pdList');
+/* ── PREGUNTAS FRECUENTES · acordeón ──────── */
+function initFAQ(){
+  var list = document.getElementById('faqList');
   if(!list) return;
-  var rows = list.querySelectorAll('.pd-row');
+  var items = list.querySelectorAll('.faq-item');
+
+  items.forEach(function(item){
+    var btn = item.querySelector('.faq-q');
+    var ans = item.querySelector('.faq-a');
+    btn.addEventListener('click', function(){
+      var abierto = item.classList.contains('open');
+      /* solo una abierta a la vez: la lista es larga */
+      items.forEach(function(o){
+        o.classList.remove('open');
+        o.querySelector('.faq-a').style.maxHeight = '';
+        o.querySelector('.faq-q').setAttribute('aria-expanded','false');
+      });
+      if(!abierto){
+        item.classList.add('open');
+        ans.style.maxHeight = ans.scrollHeight + 'px';
+        btn.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+
   ScrollTrigger.create({
-    trigger:'#padrinos', start:'top 84%', once:true,
+    trigger:'#faq', start:'top 84%', once:true,
     onEnter:function(){
-      rows.forEach(function(el, n){
-        setTimeout(function(){ el.classList.add('is-in'); }, n * 160);
+      items.forEach(function(el, n){
+        setTimeout(function(){ el.classList.add('is-in'); }, n * 70);
       });
     }
   });
+}
+
+/* ── PADRINOS · carrusel infinito (base: boda-josé-y-ana) ── */
+function initPadrinos(){
+  var carousel = document.getElementById('padCarousel');
+  if(!carousel) return;
+  var viewport = carousel.querySelector('.pad-viewport');
+  var track    = carousel.querySelector('.pad-track');
+  if(!viewport || !track) return;
+  var prevBtn = document.getElementById('padPrev');
+  var nextBtn = document.getElementById('padNext');
+  var dotsWrap = document.getElementById('padDots');
+
+  var originals = Array.prototype.slice.call(track.querySelectorAll('.pad-card'));
+  var N = originals.length;
+  if(!N) return;
+  /* 3 copias en total para que el loop no tenga fin visible */
+  for(var k=0;k<2;k++){ originals.forEach(function(c){ track.appendChild(c.cloneNode(true)); }); }
+  var allCards = Array.prototype.slice.call(track.querySelectorAll('.pad-card'));
+
+  var EASE = 'transform .55s cubic-bezier(.22,1,.36,1)';
+  var pos = N;
+  var reduce = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  dotsWrap.innerHTML = '';
+  for(var i=0;i<N;i++){
+    var d = document.createElement('span');
+    d.className = 'pad-dot'; d.dataset.idx = i;
+    d.addEventListener('click', (function(idx){ return function(){ userGoTo(idx); }; })(i));
+    dotsWrap.appendChild(d);
+  }
+  var dots = Array.prototype.slice.call(dotsWrap.querySelectorAll('.pad-dot'));
+
+  function render(animate){
+    track.style.transition = animate ? EASE : 'none';
+    var card = allCards[pos];
+    var off = viewport.clientWidth/2 - (card.offsetLeft + card.offsetWidth/2);
+    track.style.transform = 'translateX(' + off + 'px)';
+    if(!animate){ void track.offsetWidth; }
+    var L = ((pos % N) + N) % N;
+    allCards.forEach(function(c,i){ c.classList.toggle('active', i===pos); });
+    dots.forEach(function(dd,i){ dd.classList.toggle('active', i===L); });
+  }
+  function step(delta){
+    if(pos < N){ pos += N; render(false); }
+    else if(pos >= 2*N){ pos -= N; render(false); }
+    pos += delta;
+    render(true);
+  }
+  function goToLogical(idx){
+    if(pos < N){ pos += N; render(false); }
+    else if(pos >= 2*N){ pos -= N; render(false); }
+    var base = pos - (((pos % N) + N) % N);
+    pos = base + idx;
+    render(true);
+  }
+
+  var timer=null;
+  function startAuto(){ if(reduce) return; stopAuto(); timer=setInterval(function(){ step(1); }, 3600); }
+  function stopAuto(){ if(timer){ clearInterval(timer); timer=null; } }
+  function userGo(delta){ step(delta); startAuto(); }
+  function userGoTo(idx){ goToLogical(idx); startAuto(); }
+
+  nextBtn && nextBtn.addEventListener('click', function(){ userGo(1); });
+  prevBtn && prevBtn.addEventListener('click', function(){ userGo(-1); });
+
+  var sx=0, sy=0, sw=false;
+  viewport.addEventListener('touchstart', function(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; sw=true; }, {passive:true});
+  viewport.addEventListener('touchend', function(e){
+    if(!sw) return; sw=false;
+    var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)) userGo(dx<0?1:-1);
+  }, {passive:true});
+
+  carousel.addEventListener('mouseenter', stopAuto);
+  carousel.addEventListener('mouseleave', startAuto);
+
+  var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(function(){ render(false); }, 120); });
+
+  render(false);
+  startAuto();
 }
 
 /* ── SOBRES DE REVELACION (final + spoiler) ───── */
