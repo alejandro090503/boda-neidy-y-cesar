@@ -2735,7 +2735,7 @@ body.gift-locked{overflow:hidden}
       <div class="rsvp-guest-name" id="rsvpGuestName"></div>
 
       <div class="rsvp-pases-display" id="rsvpPasesDisplay" style="display:none">
-        <div class="rsvp-pases-label">Pases asignados</div>
+        <div class="rsvp-pases-label" id="rsvpPasesLabel">Pases asignados</div>
         <div class="rsvp-pases-num" id="rsvpPasesNum">1</div>
       </div>
 
@@ -3886,28 +3886,31 @@ function initRSVP(){
       var bin = atob(b64), bytes = new Uint8Array(bin.length);
       for(var i=0;i<bin.length;i++){ bytes[i] = bin.charCodeAt(i); }
       var p = new TextDecoder().decode(bytes).split('|');
-      return { para:(p[0]||'').trim(), pases: parseInt(p[1],10) || 1 };
+      return { para:(p[0]||'').trim(), pases: parseInt(p[1],10) || 1, menores: parseInt(p[2],10) || 0 };
     }catch(e){ return null; }
   }
   const qp = new URLSearchParams(location.search);
   const hp = new URLSearchParams(location.hash.replace(/^#/,''));
-  let urlPara = '', rawP = 1;
+  let urlPara = '', rawP = 1, rawM = 0;
   const token = qp.get('i') || hp.get('i');
   if(token){
     const dec = decodeInvite(token);
-    if(dec && dec.para){ urlPara = dec.para; rawP = dec.pases; }
+    if(dec && dec.para){ urlPara = dec.para; rawP = dec.pases; rawM = dec.menores; }
   }
   if(!urlPara){
     urlPara = (qp.get('para') || hp.get('para') || '').trim();
     rawP    = parseInt(qp.get('pases') || hp.get('pases'), 10);
+    rawM    = parseInt(qp.get('menores') || hp.get('menores') || '0', 10);
   }
   let pasesAsignados = (isNaN(rawP) || rawP < 1 || rawP > 20) ? 1 : rawP;
+  let pasesMenores   = (isNaN(rawM) || rawM < 0 || rawM > 20) ? 0 : rawM;
 
   let rsvpChoice = null;
   let savedNames = [];
 
   const nameEl     = document.getElementById('rsvpGuestName');
   const pasesNumEl = document.getElementById('rsvpPasesNum');
+  const pasesLblEl = document.getElementById('rsvpPasesLabel');
   const pasesDisp  = document.getElementById('rsvpPasesDisplay');
   const fieldsEl   = document.getElementById('rsvp-fields');
   const bandejaEl  = document.getElementById('rsvp-bandeja');
@@ -3932,25 +3935,45 @@ function initRSVP(){
 
   /* El nombre del invitado va en grande arriba de la tarjeta de pases. */
   function paintHeader(){
-    if(pasesNumEl) pasesNumEl.textContent = pasesAsignados;
+    if(pasesNumEl) pasesNumEl.textContent = pasesAsignados + pasesMenores;
+    if(pasesLblEl){
+      pasesLblEl.textContent = pasesMenores > 0
+        ? pasesAsignados + (pasesAsignados === 1 ? ' adulto' : ' adultos') + ' + ' + pasesMenores + (pasesMenores === 1 ? ' menor' : ' menores')
+        : 'Pases asignados';
+    }
     if(pasesDisp)  pasesDisp.style.display = 'flex';
     if(nameEl && urlPara){ nameEl.textContent = urlPara; nameEl.style.display = 'block'; }
   }
   paintHeader();
 
-  function renderFields(n){
+  /* Un campo por pase: primero los adultos y luego los menores. */
+  function renderFields(){
     fieldsEl.innerHTML = '';
-    for(let i = 0; i < n; i++){
+    const total = pasesAsignados + pasesMenores;
+    for(let i = 0; i < pasesAsignados; i++){
       const inp = document.createElement('input');
       inp.type = 'text';
       inp.className = 'rsvp-input';
-      inp.placeholder = n === 1 ? 'Tu nombre completo' : 'Nombre completo del invitado ' + (i+1);
+      inp.placeholder = total === 1 ? 'Tu nombre completo' : 'Nombre completo del invitado ' + (i+1);
       inp.autocomplete = 'off';
       inp.maxLength = 60;
       inp.disabled = frozen;
       inp.value = savedNames[i] || '';
       ((idx) => inp.addEventListener('input', function(){ savedNames[idx] = this.value; }))(i);
       fieldsEl.appendChild(inp);
+    }
+    for(let j = 0; j < pasesMenores; j++){
+      const idxM = pasesAsignados + j;
+      const inpM = document.createElement('input');
+      inpM.type = 'text';
+      inpM.className = 'rsvp-input';
+      inpM.placeholder = 'Nombre completo del menor ' + (j+1);
+      inpM.autocomplete = 'off';
+      inpM.maxLength = 60;
+      inpM.disabled = frozen;
+      inpM.value = savedNames[idxM] || '';
+      ((idx) => inpM.addEventListener('input', function(){ savedNames[idx] = this.value; }))(idxM);
+      fieldsEl.appendChild(inpM);
     }
   }
 
@@ -3960,7 +3983,7 @@ function initRSVP(){
     if(choice === 'yes'){
       btnYes.className = 'rsvp-toggle-btn selected-yes';
       btnNo.className  = 'rsvp-toggle-btn';
-      renderFields(pasesAsignados);
+      renderFields();
       fieldsEl.style.display = 'flex';
     } else {
       btnYes.className = 'rsvp-toggle-btn';
@@ -4018,6 +4041,9 @@ function initRSVP(){
         if(d && typeof d.pases === 'number' && d.pases > 0 && d.pases <= 20){
           pasesAsignados = d.pases;
         }
+        if(d && typeof d.pases_menores === 'number' && d.pases_menores >= 0 && d.pases_menores <= 20){
+          pasesMenores = d.pases_menores;
+        }
         paintHeader();
         if(!frozen){ btnYes.disabled = false; btnNo.disabled = false; }
         if(d && (d.estado === 'confirmado' || d.estado === 'declino')){
@@ -4057,10 +4083,12 @@ function initRSVP(){
     }
     let nombres = [];
     if(rsvpChoice === 'yes'){
+      /* Los campos despues de los pases de adulto son menores: se marcan
+         para que en el panel se distinga quien es menor entre los confirmados. */
       const inputs = fieldsEl.querySelectorAll('.rsvp-input');
       for(let i = 0; i < inputs.length; i++){
         const v = inputs[i].value.trim();
-        if(v) nombres.push(v);
+        if(v) nombres.push(i >= pasesAsignados ? v + ' (Menor)' : v);
       }
       if(nombres.length === 0){
         say('Por favor escribe al menos un nombre.', '#e8a090');
