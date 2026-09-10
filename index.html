@@ -2508,8 +2508,9 @@ body.gift-locked{overflow:hidden}
       <div class="wheel-card"><img src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-neidy-y-cesar/galeria/gal-06.jpg" alt="César y Neidy" decoding="async"></div>
       <div class="wheel-card"><img src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-neidy-y-cesar/galeria/gal-07.jpg" alt="César y Neidy" decoding="async"></div>
       <div class="wheel-card"><img src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-neidy-y-cesar/galeria/gal-08.jpg" alt="César y Neidy" decoding="async"></div>
-      <div class="wheel-card"><img src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-neidy-y-cesar/galeria/gal-09.jpg" alt="César y Neidy" decoding="async"></div>
       <div class="wheel-card"><img src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-neidy-y-cesar/galeria/gal-10.jpg" alt="César y Neidy" decoding="async"></div>
+      <div class="wheel-card"><img src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-neidy-y-cesar/galeria/gal-11.jpg" alt="César y Neidy" decoding="async"></div>
+      <div class="wheel-card"><img src="https://bsjoelxktbvlavfoozhk.supabase.co/storage/v1/object/public/fotos-clientes/boda-neidy-y-cesar/galeria/gal-12.jpg" alt="César y Neidy" decoding="async"></div>
     </div>
   </div>
   <p class="gal-hint">Arrastra para girar</p>
@@ -3131,13 +3132,14 @@ function scrollAnims() {
   ScrollTrigger.create({
     trigger: '#itinerary',
     start: 'top 78%',
-    end:   'bottom 58%',
+    end:   'bottom 72%',
     scrub: 0.6,
     onUpdate(self) {
       const data = window.__tlData;
       if (!data) return;
-      const { path, len, rows } = data;
-      path.style.strokeDashoffset = len * (1 - self.progress);
+      const { len, rows, capas } = data;
+      const off = len * (1 - self.progress);
+      capas.forEach(function(el){ el.style.strokeDashoffset = off; });
       const n = Math.ceil(self.progress * rows.length);
       rows.forEach((r, i) => r.classList.toggle('on', i < n));
     }
@@ -3378,9 +3380,12 @@ function buildTimelinePath() {
     if (halo) halo.setAttribute('d', d);
 
     const len = path.getTotalLength();
-    path.style.strokeDasharray  = len;
-    path.style.strokeDashoffset = len;
-    window.__tlData = { path, len, rows };
+    const capas = [path, glow, halo].filter(Boolean);
+    capas.forEach(function(el){
+      el.style.strokeDasharray  = len;
+      el.style.strokeDashoffset = len;
+    });
+    window.__tlData = { path, len, rows, capas };
     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
   }
 
@@ -3388,6 +3393,10 @@ function buildTimelinePath() {
   let rzT;
   window.addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(build, 140); }, { passive: true });
   window.addEventListener('load', build);
+  /* las fuentes cambian la altura de las filas al cargar */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(build);
+  setTimeout(build, 400);
+  setTimeout(build, 1400);
 }
 
 /* ── REVEAL de las secciones editoriales (.rvc) ───── */
