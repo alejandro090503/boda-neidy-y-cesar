@@ -2734,7 +2734,7 @@ body.gift-locked{overflow:hidden}
 
       <span class="lbl" style="margin-bottom:8px">Confirmación</span>
       <h2 class="ttl" style="margin-bottom:14px">¿Nos acompañas?</h2>
-      <p class="rsvp-text">Confirma tu asistencia antes del <strong style="color:var(--gold)">29 de Septiembre de 2026</strong>. Nos encantará saber que estarás con nosotros.</p>
+      <p class="rsvp-text">Confirma tu asistencia antes del <strong style="color:var(--gold)">13 de Octubre de 2026</strong>. Nos encantará saber que estarás con nosotros.</p>
       <p class="rsvp-text" style="margin-top:10px">Para permitir a todos nuestros invitados una velada de desconexión y celebración, solicitamos respetuosamente que la asistencia sea de <strong style="color:var(--gold)">únicamente mayores de edad</strong>.</p>
 
       <div class="rsvp-guest-name" id="rsvpGuestName"></div>
@@ -2778,7 +2778,7 @@ body.gift-locked{overflow:hidden}
 
       <div class="rsvp-deadline">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm.5 5v5.25l4.5 2.67-.75 1.23L11 13V7h1.5z"/></svg>
-        Fecha límite · 29 Sep 2026
+        Fecha límite · 13 Oct 2026
       </div>
     </div>
   </div>
@@ -3884,7 +3884,7 @@ function initGiftBox(){
 function initRSVP(){
   const PANEL_API = 'https://panel-invitados.vercel.app/api/confirmar';
   const RSVP_URL  = 'https://boda-neidy-y-cesar.vercel.app';
-  const DEADLINE  = new Date(2026, 8, 29, 23, 59, 59, 999);   /* 29 sep 2026 */
+  const DEADLINE  = new Date(2026, 9, 13, 23, 59, 59, 999);   /* 13 oct 2026 */
   const frozen    = Date.now() > DEADLINE.getTime();
 
   /* Personalizacion robusta: WhatsApp y Messenger cortan la URL en el primer
