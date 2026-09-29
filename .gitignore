@@ -1,6 +1,5 @@
 .vercel
 .DS_Store
 Thumbs.db
-*.mp3
 
 .env*
